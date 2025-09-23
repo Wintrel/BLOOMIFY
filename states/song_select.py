@@ -1,18 +1,18 @@
 import pygame
 import os
 import json
-import math  # Import math for easing function
+import math
 from settings import *
 from .base import BaseState
 from .utility import draw_text, get_dominant_color, scale_to_cover
 
 
+# noinspection D
 class SongSelect(BaseState):
     def __init__(self):
         super(SongSelect, self).__init__()
         self.next_state = "LOADING"
         self.accent_color = DEFAULT_ACCENT_COLOR
-        self.transition_duration = 0.6  # Transition in/out over 0.6 seconds
 
         # --- Load Fonts ---
         self.font_title = pygame.font.Font(None, 42)
@@ -30,23 +30,25 @@ class SongSelect(BaseState):
 
         if self.songs:
             self.load_song_assets()
-            self.select_song(0)
+            self.select_song(0)  # This will also start the first song's preview
         else:
             self.selected_song = {"title": "No Songs Found", "artist": "Please add songs to assets/songs", "bpm": "N/A",
                                   "length": "N/A", "notes": 0}
             self.background_img = pygame.Surface(self.screen_rect.size)
             self.background_img.fill(BLACK)
 
-    # --- Easing function for smooth animations ---
+    def startup(self, persistent):
+        """ When returning to this state, start the music preview again. """
+        super().startup(persistent)
+        if self.songs:
+            self.play_song_preview()
+
     def ease_out_cubic(self, x):
         return 1 - pow(1 - x, 3)
 
-    # --- All other methods like scan_for_songs, _vibrant_color, load_song_assets, select_song remain the same ---
     def scan_for_songs(self):
-        """Scans the assets/songs directory for valid song folders."""
         songs_path = "assets/songs"
-        if not os.path.exists(songs_path):
-            return
+        if not os.path.exists(songs_path): return
 
         for folder_name in os.listdir(songs_path):
             folder_path = os.path.join(songs_path, folder_name)
@@ -65,6 +67,9 @@ class SongSelect(BaseState):
                                                    "blurred" not in f.lower() and f.lower().endswith(
                                                        ('.png', '.jpg', '.jpeg'))), None)
 
+                        # --- NEW: Get audio file path from beatmap ---
+                        audio_filename = beatmap_data.get("audio_path")
+
                         song_entry = {
                             "title": beatmap_data.get("title", "Unknown Title"),
                             "artist": beatmap_data.get("artist", "Unknown Artist"),
@@ -75,6 +80,8 @@ class SongSelect(BaseState):
                             "image_path": os.path.join(folder_path, regular_image_file) if regular_image_file else None,
                             "blurred_image_path": os.path.join(folder_path,
                                                                blurred_image_file) if blurred_image_file else None,
+                            "audio_path": os.path.join(folder_path, audio_filename) if audio_filename else None,
+                            "preview_time_ms": beatmap_data.get("preview_time_ms", 10000)  # Default to 10s
                         }
                         self.songs.append(song_entry)
                     except (json.JSONDecodeError, KeyError) as e:
@@ -91,9 +98,9 @@ class SongSelect(BaseState):
     def _vibrant_color(self, color):
         try:
             h, s, v, a = pygame.Color(*color).hsva
-            s = max(s, 70)
+            s = max(s, 70);
             v = max(v, 80)
-            vibrant = pygame.Color(0)
+            vibrant = pygame.Color(0);
             vibrant.hsva = (h, s, v, a)
             return (vibrant.r, vibrant.g, vibrant.b)
         except (ValueError, TypeError):
@@ -110,11 +117,10 @@ class SongSelect(BaseState):
                     dominant_color = get_dominant_color(original_image, DEFAULT_ACCENT_COLOR)
                     self.songs[i]["accent_color"] = self._vibrant_color(dominant_color)
                 except pygame.error:
-                    self.songs[i]["banner_img"], self.songs[i]["original_img"], self.songs[i][
-                        "accent_color"] = None, None, DEFAULT_ACCENT_COLOR
+                    self.songs[i].update(
+                        {"banner_img": None, "original_img": None, "accent_color": DEFAULT_ACCENT_COLOR})
             else:
-                self.songs[i]["banner_img"], self.songs[i]["original_img"], self.songs[i][
-                    "accent_color"] = None, None, DEFAULT_ACCENT_COLOR
+                self.songs[i].update({"banner_img": None, "original_img": None, "accent_color": DEFAULT_ACCENT_COLOR})
 
             if song["blurred_image_path"] and os.path.exists(song["blurred_image_path"]):
                 try:
@@ -136,12 +142,32 @@ class SongSelect(BaseState):
         elif self.selected_song.get("original_img"):
             self.background_img = self._create_fallback_blur(self.selected_song["original_img"])
         else:
-            self.background_img = pygame.Surface(self.screen_rect.size)
+            self.background_img = pygame.Surface(self.screen_rect.size);
             self.background_img.fill((20, 20, 20))
+
+        # --- NEW: Play the song preview ---
+        self.play_song_preview()
+
+    def play_song_preview(self):
+        """ Loads and plays the music for the currently selected song. """
+        song = self.songs[self.selected_index]
+        audio_path = song.get("audio_path")
+        preview_time_s = song.get("preview_time_ms", 10000) / 1000.0
+
+        if audio_path and os.path.exists(audio_path):
+            try:
+                pygame.mixer.music.load(audio_path)
+                pygame.mixer.music.play(start=preview_time_s)
+                print(f"Playing preview for {song['title']} at {preview_time_s}s")
+            except pygame.error as e:
+                print(f"Error playing music file {audio_path}: {e}")
+        else:
+            pygame.mixer.music.stop()  # Stop music if the selected song has no audio
 
     def get_event(self, event):
         super().get_event(event)
-        if not self.songs or self.transition_state != "normal": return
+        # --- FIX: Use "static" to match our transition system ---
+        if not self.songs or self.transition_state != "static": return
 
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_DOWN:
@@ -151,9 +177,13 @@ class SongSelect(BaseState):
                 new_index = (self.selected_index - 1 + len(self.songs)) % len(self.songs)
                 self.select_song(new_index)
             elif event.key == pygame.K_RETURN:
+                # --- NEW: Fade out music before transitioning ---
+                pygame.mixer.music.fadeout(500)
+
                 self.persist["selected_song_data"] = self.selected_song
                 self.persist["selected_song_data"]["final_background"] = self.background_img
-                self.trigger_transition_out()
+                # --- FIX: Use go_to_next_state to match our transition system ---
+                self.go_to_next_state()
 
     def draw(self, surface):
         surface.blit(self.background_img, (0, 0))
@@ -162,15 +192,11 @@ class SongSelect(BaseState):
                       text_rect_origin='center')
             return
 
-        # --- Calculate Transition Progress ---
-        progress = 1 - (self.transition_timer / self.transition_duration)
+        progress = 1 - (self.transition_timer / self.transition_time)
         eased_progress = self.ease_out_cubic(progress)
 
-        # --- Define start/end positions for animations ---
-        info_panel_start_x = -500
-        info_panel_end_x = 40
-        song_list_start_x = self.screen_rect.width + 50
-        song_list_end_x = self.screen_rect.width - 550
+        info_panel_start_x, info_panel_end_x = -500, 40
+        song_list_start_x, song_list_end_x = self.screen_rect.width + 50, self.screen_rect.width - 550
 
         if self.transition_state == "in":
             info_panel_x = info_panel_start_x + (info_panel_end_x - info_panel_start_x) * eased_progress
@@ -178,24 +204,19 @@ class SongSelect(BaseState):
         elif self.transition_state == "out":
             info_panel_x = info_panel_end_x + (info_panel_start_x - info_panel_end_x) * eased_progress
             song_list_x = song_list_end_x + (song_list_start_x - song_list_end_x) * eased_progress
-        else:  # normal
+        else:  # static
             info_panel_x = info_panel_end_x
             song_list_x = song_list_end_x
 
-        # Create a temporary surface to apply the master fade
         ui_surface = pygame.Surface(self.screen_rect.size, pygame.SRCALPHA)
-
-        # Pass the calculated positions to the drawing functions
         self.draw_info_panel(ui_surface, int(info_panel_x))
         self.draw_song_list(ui_surface, int(song_list_x))
-        self.draw_header(ui_surface, int(song_list_x))  # Header moves with the song list
+        self.draw_header(ui_surface, int(song_list_x))
 
-        # Apply master alpha and blit to the main surface
-        ui_surface.set_alpha(self.transition_alpha)
+        ui_surface.set_alpha(self.get_transition_alpha())
         surface.blit(ui_surface, (0, 0))
 
     def draw_info_panel(self, surface, panel_x):
-        """ Draws the left-side panel at a given x-coordinate. """
         panel_y, panel_width, border_radius = 50, 450, 12
         title_rect = pygame.Rect(panel_x, panel_y, panel_width, 80)
         pygame.draw.rect(surface, (15, 15, 15, 200), title_rect, border_radius=border_radius)
@@ -218,7 +239,6 @@ class SongSelect(BaseState):
                       text_rect_origin='center')
 
     def draw_song_list(self, surface, list_x):
-        """ Draws the song list at a given x-coordinate. """
         center_y, banner_h, banner_w, border_radius = self.screen_rect.centery, 100, 500, 10
         display_range = range(self.selected_index - 3, self.selected_index + 4)
         for i_offset, list_index_raw in enumerate(display_range):
@@ -226,7 +246,6 @@ class SongSelect(BaseState):
                 song = self.songs[list_index_raw]
                 y_pos = center_y + (i_offset - 3) * (banner_h - 10)
                 banner_rect = pygame.Rect(list_x, y_pos, banner_w, banner_h - 20)
-
                 if song.get("banner_img"):
                     clip_surface = pygame.Surface(banner_rect.size, pygame.SRCALPHA)
                     pygame.draw.rect(clip_surface, WHITE, (0, 0, *banner_rect.size), border_radius=border_radius)
@@ -234,29 +253,24 @@ class SongSelect(BaseState):
                     surface.blit(clip_surface, banner_rect.topleft)
                 else:
                     pygame.draw.rect(surface, (30, 30, 30), banner_rect, border_radius=border_radius)
-
                 overlay = pygame.Surface(banner_rect.size, pygame.SRCALPHA)
-                gradient = pygame.Surface((2, 2), pygame.SRCALPHA)
-                pygame.draw.line(gradient, (0, 0, 0, 200), (0, 0), (1, 0))
+                gradient = pygame.Surface((2, 2), pygame.SRCALPHA);
+                pygame.draw.line(gradient, (0, 0, 0, 200), (0, 0), (1, 0));
                 pygame.draw.line(gradient, (0, 0, 0, 50), (0, 1), (1, 1))
                 gradient = pygame.transform.smoothscale(gradient, (banner_rect.width, banner_rect.height))
-                overlay.blit(gradient, (0, 0))
+                overlay.blit(gradient, (0, 0));
                 surface.blit(overlay, banner_rect.topleft)
-
                 draw_text(surface, song["title"], (banner_rect.left + 25, banner_rect.centery - 10),
                           self.font_banner_title, WHITE, text_rect_origin='topleft')
                 draw_text(surface, song["artist"], (banner_rect.left + 25, banner_rect.centery + 15),
                           self.font_banner_artist, (200, 200, 200), text_rect_origin='topleft')
-
                 if list_index_raw == self.selected_index:
                     pygame.draw.rect(surface, song["accent_color"], banner_rect, 3, border_radius=border_radius)
 
     def draw_header(self, surface, header_x):
-        """ Draws the header at a given x-coordinate. """
         btn_width, btn_height, btn_y, border_radius = 100, 35, 40, 8
         buttons = ["SORT", "GROUP", "COLLECTION"]
         btn_x_start = header_x + 500 - (btn_width * len(buttons) + (len(buttons) - 1) * 10)
-
         for i, text in enumerate(buttons):
             btn_x = btn_x_start + i * (btn_width + 10)
             btn_rect = pygame.Rect(btn_x, btn_y, btn_width, btn_height)

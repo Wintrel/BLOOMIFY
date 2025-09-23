@@ -3,6 +3,7 @@
     "artist": "BLOOMIFY Engine",
     "mapper": "Developer",
     "audio_path": "song.mp3",
+    "preview_time_ms": 30000,
     "image_path": "art.png",
     "bpm": 120,
     "offset_ms": 500,

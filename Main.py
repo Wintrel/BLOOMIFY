@@ -6,6 +6,7 @@ from states.song_select import SongSelect
 from states.loading import LoadingScreen
 from states.gameplay import Gameplay
 from states.results import ResultsScreen
+from states.debug import DebugDisplay
 
 
 class Game:
@@ -25,26 +26,33 @@ class Game:
         }
         self.state_name = "MAIN_MENU"
         self.state = self.states[self.state_name]
-        self.state.startup({}) # Initial startup for the first state
+
+        # --- NEW: Debug Overlay ---
+        self.debug_display = DebugDisplay(self)
 
     def event_loop(self):
         for event in pygame.event.get():
+
+            if event.type == pygame.QUIT:
+                self.state.quit = True
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_F3:
+                self.debug_display.toggle()
+
             self.state.get_event(event)
 
     def flip_state(self):
-        # The current state's "out" transition is done, move to the next one
+
         current_state = self.state_name
-        next_state_name = self.state.next_state
+        next_state = self.state.next_state
         self.state.done = False
 
-        # Manage the persistent data between states
+
         persistent_data = self.state.persist
 
-        # Get the new state object
-        self.state_name = next_state_name
+        self.state_name = next_state
         self.state = self.states[self.state_name]
 
-        # Start the new state with the persistent data
+
         self.state.startup(persistent_data)
 
     def update(self):
@@ -56,16 +64,23 @@ class Game:
         self.state.update(self.dt)
 
     def draw(self):
+
         self.state.draw(self.screen)
+
+
+        self.debug_display.draw(self.screen)
+
         pygame.display.flip()
 
     def run(self):
         while True:
-            self.dt = self.clock.tick(FPS)
             self.event_loop()
             self.update()
             self.draw()
+            self.dt = self.clock.tick(FPS)
 
-if __name__ == "__main__":
+
+if __name__ == '__main__':
     game = Game()
     game.run()
+
