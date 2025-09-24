@@ -1,4 +1,6 @@
 import pygame
+import math
+import time
 from settings import *
 from states.base_state import BaseState
 from ui.ui_manager import UIManager
@@ -13,7 +15,7 @@ class ResultsState(BaseState):
 
         # --- UI Setup ---
         self.ui_manager = UIManager()
-        self.ui_manager.load_layout("layouts/Results_Layout.json")
+        self.ui_manager.load_layout("layouts/results_layout.json")
 
         # --- State Data ---
         self.results_data = {}
@@ -21,6 +23,7 @@ class ResultsState(BaseState):
         self.background_img = pygame.Surface(self.screen_rect.size)
         self.background_img.fill(BLACK)
         self.score_arc = None
+        self._display_score = 0  # for animated score counting
 
     def startup(self, persistent):
         super().startup(persistent)
@@ -30,25 +33,31 @@ class ResultsState(BaseState):
         # --- Create blurred background ---
         original_img = asset_loader.load_image(self.song_data.get("image_path"))
         if original_img:
-            self.background_img = asset_loader.create_blurred_background(original_img, self.screen_rect.size)
+            self.background_img = asset_loader.create_blurred_background(
+                original_img, self.screen_rect.size
+            )
+        overlay = pygame.Surface(self.screen_rect.size, pygame.SRCALPHA)
+        overlay.fill((0, 0, 0, 120))  # dark overlay
+        self.background_img.blit(overlay, (0, 0))
 
-        # --- Populate UI elements with results data ---
+        # --- Populate UI elements ---
         self.populate_ui()
 
-        # --- Setup the animated score arc ---
+        # --- Setup animated score arc with glow ---
         placeholder = self.ui_manager.get_element_by_name("score_ellipse")
         if placeholder:
             accent_color = self.song_data.get("accent_color", (255, 255, 255))
             self.score_arc = AnimatedArc(
                 pos=placeholder.absolute_pos,
                 size=placeholder.size,
-                width=28,  # Thickness from your Figma design
+                width=28,
                 color=accent_color,
-                fill_percent=self.results_data.get("accuracy", 0)
+                fill_percent=self.results_data.get("accuracy", 0),
+                glow_color=accent_color
             )
 
     def populate_ui(self):
-        """Finds UI elements by name and fills them with dynamic data."""
+        """Populate UI labels with results data."""
         judgements = self.results_data.get("judgement_counts", {})
 
         ui_map = {
@@ -79,8 +88,30 @@ class ResultsState(BaseState):
                 self.go_to_next_state()
 
     def draw(self, surface):
+        # --- Draw background ---
         surface.blit(self.background_img, (0, 0))
-        self.ui_manager.draw(surface)
+
+        # --- Animate score counting up ---
+        target_score = self.results_data.get("score", 0)
+        if self._display_score < target_score:
+            self._display_score += max(1, (target_score - self._display_score)//15)
+        score_element = self.ui_manager.get_element_by_name("end_score")
+        if score_element:
+            score_element.set_text(f"{min(self._display_score, target_score):,}")
+
+        # --- Animate grade letter pulse (font size) ---
+        grade_element = self.ui_manager.get_element_by_name("score_grade")
+        if grade_element:
+            base_size = 200  # original font size
+            pulse_size = int(base_size + 10 * math.sin(time.time() * 4))
+            grade_element.styles['text']['size'] = pulse_size
+            grade_element.set_text(self.results_data.get("grade", "F"))
+
+        # --- Animate glowing score arc ---
         if self.score_arc:
+            pulse_alpha = int(150 + 50 * math.sin(time.time() * 6))  # pulsing glow
+            self.score_arc.set_glow_alpha(pulse_alpha)
             self.score_arc.draw(surface)
 
+        # --- Draw UI elements ---
+        self.ui_manager.draw(surface)

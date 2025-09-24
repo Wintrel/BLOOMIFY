@@ -1,0 +1,46 @@
+{
+  "structure": {
+    "name": "settings_root",
+    "type": "FRAME",
+    "children": [
+      {
+        "name": "settings_panel",
+        "type": "RECTANGLE",
+        "pos": {"x": 0, "y": 0},
+        "size": {"w": 450, "h": 1080},
+        "styles": { "bg": "rgba(25,27,35,180)" },
+        "children": [
+          {
+            "name": "settings_title",
+            "type": "TEXT",
+            "pos": {"x": 30, "y": 50},
+            "size": {"w": 390, "h": 50},
+            "content": "SETTINGS",
+            "styles": {
+              "bg": "rgba(0,0,0,0)",
+              "text": { "family": "Inter", "size": 42, "weight": "700", "align": "left", "color": "rgb(255,255,255)" }
+            }
+          },
+          {
+            "name": "volume_label",
+            "type": "TEXT",
+            "pos": {"x": 30, "y": 150},
+            "size": {"w": 390, "h": 30},
+            "content": "Master Volume",
+            "styles": {
+              "bg": "rgba(0,0,0,0)",
+              "text": { "family": "Inter", "size": 24, "weight": "500", "align": "left", "color": "rgb(255,255,255)" }
+            }
+          },
+          {
+            "name": "volume_slider_placeholder",
+            "type": "RECTANGLE",
+            "pos": {"x": 30, "y": 190},
+            "size": {"w": 390, "h": 20},
+            "styles": { "bg": "rgba(100,100,100,50)" }
+          }
+        ]
+      }
+    ]
+  }
+}

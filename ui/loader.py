@@ -17,23 +17,26 @@ def _parse_figma_color(color_string, default_color=(0, 0, 0, 0)):
     if not isinstance(color_string, str): return default_color
     try:
         parts_str = color_string.lower().strip().strip('rgba()').strip('rgb()')
-        parts = [int(p.strip()) for p in parts_str.split(',')]
-        return tuple(parts) + (255,) if len(parts) == 3 else tuple(parts)
+        parts = [float(p.strip()) for p in parts_str.split(',')]
+        # Convert 0-1 alpha from Figma to 0-255 for Pygame if present
+        if len(parts) == 4 and parts[3] <= 1.0:
+            parts[3] *= 255
+
+        final_parts = [int(p) for p in parts]
+        return tuple(final_parts) + (255,) if len(final_parts) == 3 else tuple(final_parts)
     except (ValueError, TypeError):
         return default_color
 
 
 def _get_position_from_data(data):
-    # This robustly checks for different possible position keys you might add manually
     for key in ['pos', 'position']:
         if key in data and isinstance(data.get(key), dict):
             return [data[key].get('x', 0), data[key].get('y', 0)]
-    # Also check for the weird nested position some plugins use
     if 'size' in data and isinstance(data.get('size'), dict) and 'position' in data['size']:
         pos_data = data['size']['position']
         if isinstance(pos_data, dict):
             return [pos_data.get('x', 0), pos_data.get('y', 0)]
-    return None  # Return None if no position is found
+    return None
 
 
 def load_layout_from_figma(file_path):
@@ -50,36 +53,38 @@ def load_layout_from_figma(file_path):
 
 def _create_element_from_figma_data(data, parent=None):
     name = data.get("name", "")
-    element_class = ImagePanel if name.startswith("IMG_") else FIGMA_TO_UI_MAP.get(data.get("type"))
+
+    element_class = None
+    if name.startswith("IMG_"):
+        element_class = ImagePanel
+    elif name.endswith("_button"):
+        element_class = Button
+    else:
+        element_class = FIGMA_TO_UI_MAP.get(data.get("type"))
+
     if not element_class: return None
 
     size = [data.get("size", {}).get("w", 0), data.get("size", {}).get("h", 0)]
-
-    # --- POSITIONING LOGIC ---
     absolute_pos = _get_position_from_data(data)
+    if absolute_pos is None: absolute_pos = [0, 0]
 
-    # If a position is found in the JSON, use it. Otherwise, default to (0,0).
-    if absolute_pos is None:
-        absolute_pos = [0, 0]
-
-    # Calculate the position of this element RELATIVE to its parent.
     if parent:
         relative_pos = [absolute_pos[0] - parent.absolute_pos[0], absolute_pos[1] - parent.absolute_pos[1]]
     else:
-        # If there's no parent, its relative position is its absolute position.
         relative_pos = absolute_pos
 
-    element = element_class(name=name, pos=relative_pos, size=size, parent=parent)
-    # The UIElement's __init__ will now correctly calculate the final absolute_pos
-
+    element_args = {'name': name, 'pos': relative_pos, 'size': size, 'parent': parent}
     styles = data.get("styles", {})
-    if isinstance(element, Panel):
-        element.bg_color = _parse_figma_color(styles.get("bg"))
-        element.radius = int(styles.get("radius", 0))
+
+    if issubclass(element_class, Panel):
+        element_args['bg_color'] = _parse_figma_color(styles.get("bg"))
+        element_args['radius'] = int(styles.get("radius", 0))
         border = styles.get("border", {})
         if border:
-            element.border_width = int(border.get("width", 0))
-            element.border_color = _parse_figma_color(border.get("color"))
+            element_args['border_width'] = int(border.get("width", 0))
+            element_args['border_color'] = _parse_figma_color(border.get("color"))
+
+    element = element_class(**element_args)
 
     if isinstance(element, Label):
         element.set_text(data.get("content", ""))
@@ -87,7 +92,13 @@ def _create_element_from_figma_data(data, parent=None):
         element.font_size = int(text_styles.get("size", 16))
         element.font_name = text_styles.get("family")
         element.align = text_styles.get("align", "left").lower()
-        element.color = _parse_figma_color(styles.get("bg"), (255, 255, 255, 255))
+
+        # --- FIX: Prioritize text color from the nested "text" style object ---
+        if 'color' in text_styles:
+            element.color = _parse_figma_color(text_styles.get("color"), (255, 255, 255, 255))
+        else:  # Fallback to the main 'bg' color
+            element.color = _parse_figma_color(styles.get("bg"), (255, 255, 255, 255))
+
         element.create_text_surface()
 
     if isinstance(element, ImagePanel):

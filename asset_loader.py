@@ -7,7 +7,7 @@ FONT_CACHE = {}
 
 # --- Paths ---
 BASE_PATH = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-FONT_PATH = os.path.join(BASE_PATH, "assets", "FFonts")
+FONT_PATH = os.path.join(BASE_PATH, "assets", "fonts")
 IMAGE_PATH = os.path.join(BASE_PATH, "assets", "images")
 
 
@@ -83,15 +83,31 @@ def load_image(path):
     return None
 
 
-def create_blurred_background(image, size):
-    if not image: return None
-    small_size = (size[0] // 20, size[1] // 20)
-    scaled_down = pygame.transform.smoothscale(image, small_size)
-    blurred = pygame.transform.smoothscale(scaled_down, size)
+def create_blurred_background(image, size, passes=4):
+    if not image:
+        return None
+
+    base_image = scale_to_cover(image, size)
+    blurred_surface = pygame.Surface(size, pygame.SRCALPHA)
+    blurred_surface.blit(base_image, (0, 0))
+
+    for i in range(passes):
+        scale_factor = 2 ** (i + 1)
+        small_size = (size[0] // scale_factor, size[1] // scale_factor)
+
+        # Always blur from base_image, not the layered blur
+        scaled_down = pygame.transform.smoothscale(base_image, small_size)
+        scaled_up = pygame.transform.smoothscale(scaled_down, size)
+
+        scaled_up.set_alpha(180)  # keep constant alpha for stronger blur
+        blurred_surface.blit(scaled_up, (0, 0))
+
     dark_overlay = pygame.Surface(size, pygame.SRCALPHA)
     dark_overlay.fill((0, 0, 0, 150))
-    blurred.blit(dark_overlay, (0, 0))
-    return blurred
+    blurred_surface.blit(dark_overlay, (0, 0))
+
+    return blurred_surface
+
 
 
 def get_dominant_color(image, default_color=(128, 128, 128), vibrant=False):

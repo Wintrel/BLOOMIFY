@@ -16,7 +16,6 @@ BLUE = (0, 0, 255)
 DEFAULT_ACCENT_COLOR = (200, 30, 30)
 
 # --- Gameplay Settings ---
-VOLUME = 5
 # These are crucial for the gameplay to function correctly.
 
 LANES = 4

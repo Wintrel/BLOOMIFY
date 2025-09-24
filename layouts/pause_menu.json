@@ -1,0 +1,70 @@
+{
+    "structure": {
+        "name": "pause_menu_root",
+        "type": "GROUP",
+        "pos": {"x": 0, "y": 0},
+        "size": {"w": 1920, "h": 1080},
+        "children": [
+            {
+                "name": "pause_panel",
+                "type": "RECTANGLE",
+                "pos": {"x": 760, "y": 400},
+                "size": {"w": 400, "h": 280},
+                "styles": { "bg": "rgba(20, 22, 30, 230)", "radius": 20 }
+            },
+            {
+                "name": "pause_title",
+                "type": "TEXT",
+                "pos": {"x": 760, "y": 420},
+                "size": {"w": 400, "h": 50},
+                "content": "PAUSED",
+                "styles": { "bg": "rgb(255, 255, 255)", "text": { "family": "Inter", "size": 42, "weight": "700", "align": "center" } }
+            },
+            {
+                "name": "continue_button",
+                "type": "RECTANGLE",
+                "pos": {"x": 810, "y": 490},
+                "size": {"w": 300, "h": 50},
+                "styles": { "bg": "rgb(40, 40, 50)", "radius": 10 }
+            },
+            {
+                "name": "continue_text",
+                "type": "TEXT",
+                "pos": {"x": 810, "y": 505},
+                "size": {"w": 300, "h": 20},
+                "content": "CONTINUE",
+                "styles": { "bg": "rgb(220, 220, 220)", "text": { "family": "Inter", "size": 18, "weight": "700", "align": "center" } }
+            },
+            {
+                "name": "restart_button",
+                "type": "RECTANGLE",
+                "pos": {"x": 810, "y": 550},
+                "size": {"w": 300, "h": 50},
+                "styles": { "bg": "rgb(40, 40, 50)", "radius": 10 }
+            },
+            {
+                "name": "restart_text",
+                "type": "TEXT",
+                "pos": {"x": 810, "y": 565},
+                "size": {"w": 300, "h": 20},
+                "content": "RESTART",
+                "styles": { "bg": "rgb(220, 220, 220)", "text": { "family": "Inter", "size": 18, "weight": "700", "align": "center" } }
+            },
+            {
+                "name": "quit_button",
+                "type": "RECTANGLE",
+                "pos": {"x": 810, "y": 610},
+                "size": {"w": 300, "h": 50},
+                "styles": { "bg": "rgb(40, 40, 50)", "radius": 10 }
+            },
+            {
+                "name": "quit_text",
+                "type": "TEXT",
+                "pos": {"x": 810, "y": 625},
+                "size": {"w": 300, "h": 20},
+                "content": "QUIT TO MENU",
+                "styles": { "bg": "rgb(220, 220, 220)", "text": { "family": "Inter", "size": 18, "weight": "700", "align": "center" } }
+            }
+        ]
+    }
+}

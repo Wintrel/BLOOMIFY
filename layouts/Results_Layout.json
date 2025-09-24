@@ -1,8 +1,8 @@
 {
   "metadata": {
     "designer": "BLOOMIFY Engine",
-    "version": "1.0",
-    "description": "A clean, minimalist layout for the results screen."
+    "version": "1.1",
+    "description": "Enhanced results screen with depth, glow, and animations."
   },
   "structure": {
     "name": "results_root",
@@ -10,134 +10,144 @@
     "size": { "w": 1920, "h": 1080 },
     "children": [
       {
+        "name": "background_overlay",
+        "type": "RECTANGLE",
+        "size": { "w": 1920, "h": 1080 },
+        "pos": { "x": 0, "y": 0 },
+        "styles": { "bg": "rgba(0,0,0,120)" }
+      },
+      {
         "name": "main_panel",
         "type": "RECTANGLE",
-        "size": { "w": 900, "h": 700 },
-        "pos": { "x": 510, "y": 190 },
+        "size": { "w": 950, "h": 750 },
+        "pos": { "x": 485, "y": 165 },
         "styles": {
-          "bg": "rgba(20, 22, 30, 230)",
-          "radius": 20
+          "bg": "rgba(25, 27, 40, 230)",
+          "radius": 30,
+          "shadow": { "offset": [8, 8], "blur": 20, "color": "rgba(0,0,0,100)" }
         }
       },
       {
         "name": "beatmaps_name",
         "type": "TEXT",
-        "size": { "w": 900, "h": 40 },
-        "pos": { "x": 510, "y": 220 },
+        "size": { "w": 950, "h": 50 },
+        "pos": { "x": 485, "y": 200 },
         "content": "Song Title",
-        "styles": { "bg": "rgb(255, 255, 255)", "text": { "family": "Inter", "size": 36, "weight": "700", "align": "center" } }
+        "styles": {
+          "bg": "transparent",
+          "text": { "family": "Inter", "size": 42, "weight": "800", "align": "center", "glow": "rgba(255,255,255,100)" }
+        }
       },
       {
         "name": "beatmapper_name",
         "type": "TEXT",
-        "size": { "w": 900, "h": 25 },
-        "pos": { "x": 510, "y": 270 },
+        "size": { "w": 950, "h": 30 },
+        "pos": { "x": 485, "y": 260 },
         "content": "Song Artist",
-        "styles": { "bg": "rgb(180, 180, 180)", "text": { "family": "Inter", "size": 22, "weight": "500", "align": "center" } }
+        "styles": { "bg": "transparent", "text": { "family": "Inter", "size": 26, "weight": "500", "align": "center", "opacity": 0.8 } }
       },
       {
         "name": "score_ellipse",
         "type": "ELLIPSE",
-        "size": { "w": 280, "h": 280 },
-        "pos": { "x": 820, "y": 340 },
-        "styles": { "border": { "width": 20, "color": "rgb(50, 50, 60)" } }
+        "size": { "w": 300, "h": 300 },
+        "pos": { "x": 810, "y": 320 },
+        "styles": { "border": { "width": 28, "color": "rgb(50,50,60)" }, "glow": "accent_color" }
       },
       {
         "name": "score_grade",
         "type": "TEXT",
-        "size": { "w": 280, "h": 280 },
-        "pos": { "x": 820, "y": 340 },
+        "size": { "w": 300, "h": 300 },
+        "pos": { "x": 810, "y": 320 },
         "content": "S",
-        "styles": { "bg": "rgb(255, 255, 255)", "text": { "family": "Inter", "size": 200, "weight": "700", "align": "center" } }
+        "styles": { "bg": "transparent", "text": { "family": "Inter", "size": 200, "weight": "900", "align": "center", "gradient": ["#FFD700","#FF6F61"] } }
       },
       {
         "name": "end_score",
         "type": "TEXT",
-        "size": { "w": 900, "h": 60 },
-        "pos": { "x": 510, "y": 640 },
+        "size": { "w": 950, "h": 70 },
+        "pos": { "x": 485, "y": 650 },
         "content": "0",
-        "styles": { "bg": "rgb(255, 255, 255)", "text": { "family": "Inter", "size": 54, "weight": "700", "align": "center" } }
+        "styles": { "bg": "transparent", "text": { "family": "Inter", "size": 56, "weight": "700", "align": "center", "glow": "accent_color" } }
       },
       {
         "name": "end_accuracy",
         "type": "TEXT",
-        "size": { "w": 900, "h": 30 },
-        "pos": { "x": 510, "y": 700 },
+        "size": { "w": 950, "h": 35 },
+        "pos": { "x": 485, "y": 720 },
         "content": "0.00%",
-        "styles": { "bg": "rgb(200, 200, 200)", "text": { "family": "Inter", "size": 28, "weight": "500", "align": "center" } }
+        "styles": { "bg": "transparent", "text": { "family": "Inter", "size": 28, "weight": "500", "align": "center", "opacity": 0.9 } }
       },
       {
         "name": "judgement_panel",
         "type": "RECTANGLE",
-        "size": { "w": 700, "h": 100 },
-        "pos": { "x": 610, "y": 760 },
-        "styles": { "bg": "rgba(10, 12, 20, 180)", "radius": 15 }
+        "size": { "w": 750, "h": 110 },
+        "pos": { "x": 585, "y": 770 },
+        "styles": { "bg": "rgba(15, 18, 28, 180)", "radius": 20 }
       },
       {
         "name": "judgement_great_label",
         "type": "TEXT",
-        "size": { "w": 100, "h": 20 },
-        "pos": { "x": 685, "y": 780 },
+        "size": { "w": 110, "h": 25 },
+        "pos": { "x": 660, "y": 790 },
         "content": "PERFECT",
-        "styles": { "bg": "rgb(80, 220, 255)", "text": { "family": "Inter", "size": 18, "weight": "700", "align": "center" } }
+        "styles": { "bg": "transparent", "text": { "family": "Inter", "size": 18, "weight": "700", "align": "center", "color": "rgb(80,220,255)" } }
       },
       {
         "name": "great_judgements",
         "type": "TEXT",
-        "size": { "w": 100, "h": 30 },
-        "pos": { "x": 685, "y": 810 },
+        "size": { "w": 110, "h": 35 },
+        "pos": { "x": 660, "y": 820 },
         "content": "0",
-        "styles": { "bg": "rgb(255, 255, 255)", "text": { "family": "Inter", "size": 24, "weight": "500", "align": "center" } }
+        "styles": { "bg": "transparent", "text": { "family": "Inter", "size": 26, "weight": "500", "align": "center" } }
       },
       {
         "name": "judgement_good_label",
         "type": "TEXT",
-        "size": { "w": 100, "h": 20 },
-        "pos": { "x": 835, "y": 780 },
+        "size": { "w": 110, "h": 25 },
+        "pos": { "x": 810, "y": 790 },
         "content": "GREAT",
-        "styles": { "bg": "rgb(100, 255, 100)", "text": { "family": "Inter", "size": 18, "weight": "700", "align": "center" } }
+        "styles": { "bg": "transparent", "text": { "family": "Inter", "size": 18, "weight": "700", "align": "center", "color": "rgb(100,255,100)" } }
       },
       {
         "name": "good_judgement",
         "type": "TEXT",
-        "size": { "w": 100, "h": 30 },
-        "pos": { "x": 835, "y": 810 },
+        "size": { "w": 110, "h": 35 },
+        "pos": { "x": 810, "y": 820 },
         "content": "0",
-        "styles": { "bg": "rgb(255, 255, 255)", "text": { "family": "Inter", "size": 24, "weight": "500", "align": "center" } }
+        "styles": { "bg": "transparent", "text": { "family": "Inter", "size": 26, "weight": "500", "align": "center" } }
       },
       {
         "name": "judgement_meh_label",
         "type": "TEXT",
-        "size": { "w": 100, "h": 20 },
-        "pos": { "x": 985, "y": 780 },
+        "size": { "w": 110, "h": 25 },
+        "pos": { "x": 960, "y": 790 },
         "content": "GOOD",
-        "styles": { "bg": "rgb(255, 230, 80)", "text": { "family": "Inter", "size": 18, "weight": "700", "align": "center" } }
+        "styles": { "bg": "transparent", "text": { "family": "Inter", "size": 18, "weight": "700", "align": "center", "color": "rgb(255,230,80)" } }
       },
       {
         "name": "meh_judgement",
         "type": "TEXT",
-        "size": { "w": 100, "h": 30 },
-        "pos": { "x": 985, "y": 810 },
+        "size": { "w": 110, "h": 35 },
+        "pos": { "x": 960, "y": 820 },
         "content": "0",
-        "styles": { "bg": "rgb(255, 255, 255)", "text": { "family": "Inter", "size": 24, "weight": "500", "align": "center" } }
+        "styles": { "bg": "transparent", "text": { "family": "Inter", "size": 26, "weight": "500", "align": "center" } }
       },
       {
         "name": "judgement_miss_label",
         "type": "TEXT",
-        "size": { "w": 100, "h": 20 },
-        "pos": { "x": 1135, "y": 780 },
+        "size": { "w": 110, "h": 25 },
+        "pos": { "x": 1110, "y": 790 },
         "content": "MISS",
-        "styles": { "bg": "rgb(200, 200, 200)", "text": { "family": "Inter", "size": 18, "weight": "700", "align": "center" } }
+        "styles": { "bg": "transparent", "text": { "family": "Inter", "size": 18, "weight": "700", "align": "center", "color": "rgb(200,200,200)" } }
       },
       {
         "name": "miss_judgement",
         "type": "TEXT",
-        "size": { "w": 100, "h": 30 },
-        "pos": { "x": 1135, "y": 810 },
+        "size": { "w": 110, "h": 35 },
+        "pos": { "x": 1110, "y": 820 },
         "content": "0",
-        "styles": { "bg": "rgb(255, 255, 255)", "text": { "family": "Inter", "size": 24, "weight": "500", "align": "center" } }
+        "styles": { "bg": "transparent", "text": { "family": "Inter", "size": 26, "weight": "500", "align": "center" } }
       }
     ]
   }
 }
-

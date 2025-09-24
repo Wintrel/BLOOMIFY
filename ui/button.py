@@ -1,51 +1,51 @@
 import pygame
 from ui.panel import Panel
-from ui.label import Label
 
 
 class Button(Panel):
     """
-    An interactive button element that can be clicked.
-    It's a Panel that also contains a Label and handles mouse input.
+    An interactive Panel that can be clicked. It now automatically
+    generates a hover color.
     """
 
-    def __init__(self, pos, size, color, text, font_size, text_color, hover_color=None, action=None, **kwargs):
-        super().__init__(pos, size, color, **kwargs)
-        self.text = text
-        self.font_size = font_size
-        self.text_color = text_color
+    def __init__(self, name="", pos=(0, 0), size=(0, 0), parent=None, bg_color=(50, 50, 50, 255), hover_color=None,
+                 radius=0, on_click=None):
+        super().__init__(name=name, pos=pos, size=size, parent=parent, bg_color=bg_color, radius=radius)
 
-        # Visual feedback for interaction
-        self.base_color = color
-        self.hover_color = hover_color if hover_color else [min(c + 30, 255) for c in color[:3]]
+        self.base_color = bg_color
+
+        # If no hover color is provided, create one automatically by brightening the base color.
+        if hover_color:
+            self.hover_color = hover_color
+        else:
+            r, g, b, a = self.base_color
+            self.hover_color = (min(r + 30, 255), min(g + 30, 255), min(b + 30, 255), a)
+
+        self.on_click = on_click
         self.is_hovered = False
 
-        # The function to call when the button is clicked
-        self.action = action
-
-        # Create a label as a child element
-        self.label = Label(self.rect.center, text, font_size, text_color)
-
     def get_event(self, event):
-        if event.type == pygame.MOUSEMOTION:
-            self.is_hovered = self.rect.collidepoint(event.pos)
+        """ Checks for mouse hover and click events. """
+        if self.visible:
+            if event.type == pygame.MOUSEMOTION:
+                self.is_hovered = self.get_rect().collidepoint(event.pos)
 
-        if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
-            if self.is_hovered and self.action:
-                self.action()  # Execute the assigned function
+            if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
+                if self.is_hovered and self.on_click:
+                    self.on_click()
+
+        super().get_event(event)
 
     def update(self, dt):
-        # Change color on hover
+        """ Updates background color based on hover state. """
         if self.is_hovered:
-            self.color = self.hover_color
+            self.bg_color = self.hover_color
         else:
-            self.color = self.base_color
+            self.bg_color = self.base_color
 
         super().update(dt)
 
-    def draw(self, surface):
-        # Draw the panel background first
-        super().draw(surface)
+    def get_rect(self):
+        """ Returns the button's rectangle for collision detection. """
+        return pygame.Rect(self.absolute_pos, self.size)
 
-        # Then draw the text label on top
-        self.label.draw(surface)
