@@ -80,7 +80,7 @@ class MainMenu(BaseState):
             draw_text(surface, "BLOOMIFY", self.title_pos, self.title_font, WHITE,
                       outline_width=2, outline_color=WHITE, alpha=self.get_transition_alpha())
 
-            # --- FIX: Draw the solid text fill inside the outline ---
+
             # Create a clipping rect that grows with the reveal animation
             title_render_rect = self.title_font.render("BLOOMIFY", True, WHITE).get_rect(center=self.title_pos)
             clip_width = int(title_render_rect.width * self.reveal_progress)

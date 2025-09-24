@@ -1,0 +1,339 @@
+{
+  "metadata": {
+    "exportedAt": "2025-09-23T19:08:11.391Z",
+    "componentName": "Frame 53",
+    "totalElements": 38,
+    "nestingDepth": 3,
+    "plugin": "Figma to JSON Exporter"
+  },
+  "designTokens": {
+    "colors": {
+      "color-rgb(0, 0, 0)": "rgb(0, 0, 0)",
+      "color-rgb(71, 71, 71)": "rgb(71, 71, 71)",
+      "color-rgb(64, 0, 0)": "rgb(64, 0, 0)",
+      "color-rgb(16, 16, 16)": "rgb(16, 16, 16)",
+      "color-rgb(255, 255, 255)": "rgb(255, 255, 255)",
+      "color-rgb(217, 217, 217)": "rgb(217, 217, 217)",
+      "color-rgb(33, 33, 33)": "rgb(33, 33, 33)"
+    },
+    "fonts": {
+      "inter": {
+        "family": "Inter",
+        "sizes": {
+          "size-15": "15px",
+          "size-16": "16px",
+          "size-13": "13px",
+          "size-20": "20px",
+          "size-24": "24px",
+          "size-14": "14px"
+        },
+        "weights": {
+          "weight-700": "700",
+          "weight-500": "500"
+        }
+      }
+    },
+    "spacing": {},
+    "effects": {}
+  },
+  "structure": {
+    "name": "frame-53",
+    "type": "FRAME",
+    "size": {
+      "w": 1920,
+      "h": 1080
+    },
+    "styles": {
+      "layout": {
+        "direction": "row",
+        "gap": 0,
+        "align": {
+          "main": "start",
+          "cross": "start"
+        }
+      }
+    },
+    "children": [
+      {
+        "name": "sorter",
+        "type": "GROUP",
+        "size": {
+          "w": 875,
+          "h": 36
+        },
+        "pos": {"x": 1022, "y": 33},
+        "children": [
+          {
+            "name": "sort_button",
+            "type": "RECTANGLE",
+            "size": { "w": 280, "h": 36 },
+            "pos": { "x": 1022, "y": 33 },
+            "styles": { "bg": "rgb(64, 0, 0)", "radius": 20 }
+          },
+          {
+            "name": "group_button",
+            "type": "RECTANGLE",
+            "size": { "w": 280, "h": 36 },
+            "pos": { "x": 1319.74, "y": 33 },
+            "styles": { "bg": "rgb(64, 0, 0)", "radius": 20 }
+          },
+          {
+            "name": "collection_button",
+            "type": "RECTANGLE",
+            "size": { "w": 280, "h": 36 },
+            "pos": { "x": 1617.48, "y": 33 },
+            "styles": { "bg": "rgb(64, 0, 0)", "radius": 20 }
+          },
+          {
+            "name": "sort_background",
+            "type": "RECTANGLE",
+            "size": { "w": 118, "h": 36 },
+            "pos": { "x": 1022, "y": 33 },
+            "styles": { "bg": "rgb(16, 16, 16)", "radius": 20 }
+          },
+          {
+            "name": "group_background",
+            "type": "RECTANGLE",
+            "size": { "w": 105, "h": 36 },
+            "pos": { "x": 1319.74, "y": 33 },
+            "styles": { "bg": "rgb(16, 16, 16)", "radius": 20 }
+          },
+          {
+            "name": "collection_background",
+            "type": "RECTANGLE",
+            "size": { "w": 147, "h": 36 },
+            "pos": { "x": 1617.48, "y": 33 },
+            "styles": { "bg": "rgb(16, 16, 16)", "radius": 20 }
+          },
+          {
+            "name": "sort",
+            "type": "TEXT",
+            "size": { "w": 104, "h": 20 },
+            "pos": { "x": 1028.31, "y": 40.71 },
+            "content": "SORT",
+            "styles": { "bg": "rgb(255, 255, 255)", "text": { "family": "Inter", "size": 15, "weight": "700", "align": "center" } }
+          },
+          {
+            "name": "group",
+            "type": "TEXT",
+            "size": { "w": 104, "h": 20 },
+            "pos": { "x": 1319.74, "y": 40.71 },
+            "content": "GROUP",
+            "styles": { "bg": "rgb(255, 255, 255)", "text": { "family": "Inter", "size": 15, "weight": "700", "align": "center" } }
+          },
+          {
+            "name": "collection",
+            "type": "TEXT",
+            "size": { "w": 123, "h": 10 },
+            "pos": { "x": 1629.39, "y": 45.61 },
+            "content": "COLLECTION",
+            "styles": { "bg": "rgb(255, 255, 255)", "text": { "family": "Inter", "size": 15, "weight": "700", "align": "center" } }
+          }
+        ]
+      },
+      {
+        "name": "song_banner",
+        "type": "GROUP",
+        "size": { "w": 740, "h": 70 },
+        "pos": { "x": 1179.5, "y": 505 },
+        "children": [
+          {
+            "name": "beatmap_art_placeholder",
+            "type": "RECTANGLE",
+            "size": { "w": 740, "h": 70 },
+            "pos": { "x": 1179.5, "y": 505 },
+            "styles": { "bg": "rgb(217, 217, 217)" }
+          },
+          {
+            "name": "beatmaps_name",
+            "type": "TEXT",
+            "size": { "w": 164, "h": 34 },
+            "pos": { "x": 1196.28, "y": 512.52 },
+            "content": "SUDDEN DEATH",
+            "styles": { "bg": "rgb(255, 255, 255)", "text": { "family": "Inter", "size": 16, "weight": "700", "align": "left" } }
+          },
+          {
+            "name": "beatmapper_name",
+            "type": "TEXT",
+            "size": { "w": 85, "h": 20 },
+            "pos": { "x": 1196, "y": 536 },
+            "content": "WINTREL",
+            "styles": { "bg": "rgb(255, 255, 255)", "text": { "family": "Inter", "size": 13, "weight": "700", "align": "left" } }
+          }
+        ]
+      },
+      {
+        "name": "player_score",
+        "type": "GROUP",
+        "size": { "w": 741, "h": 68 },
+        "pos": { "x": 44, "y": 253 },
+        "children": [
+          {
+            "name": "player_card_background",
+            "type": "RECTANGLE",
+            "size": { "w": 741, "h": 68 },
+            "pos": { "x": 44, "y": 253 },
+            "styles": { "bg": "rgb(64, 0, 0)", "radius": 20 }
+          },
+          {
+            "name": "position_background",
+            "type": "RECTANGLE",
+            "size": { "w": 71, "h": 68 },
+            "pos": { "x": 44, "y": 253 },
+            "styles": { "bg": "rgb(33, 33, 33)", "radius": 20 }
+          },
+          {
+            "name": "players_name",
+            "type": "TEXT",
+            "size": { "w": 167, "h": 58 },
+            "pos": { "x": 119, "y": 258 },
+            "content": "PLAYER NAME",
+            "styles": { "bg": "rgb(255, 255, 255)", "text": { "family": "Inter", "size": 20, "weight": "700", "align": "center" } }
+          },
+          {
+            "name": "positon_amount",
+            "type": "TEXT",
+            "size": { "w": 68, "h": 66 },
+            "pos": { "x": 48, "y": 255 },
+            "content": "1.",
+            "styles": { "bg": "rgb(255, 255, 255)", "text": { "family": "Inter", "size": 20, "weight": "700", "align": "center" } }
+          },
+          {
+            "name": "score_amount",
+            "type": "TEXT",
+            "size": { "w": 174, "h": 43 },
+            "pos": { "x": 604, "y": 265 },
+            "content": "SCORE HERE",
+            "styles": { "bg": "rgb(255, 255, 255)", "text": { "family": "Inter", "size": 20, "weight": "700", "align": "center" } }
+          }
+        ]
+      },
+      {
+        "name": "info_panel",
+        "type": "GROUP",
+        "size": { "w": 741, "h": 184 },
+        "pos": { "x": 44, "y": 25 },
+        "children": [
+          {
+            "name": "IMG_beatmap_art_placeholder",
+            "type": "RECTANGLE",
+            "size": { "w": 741, "h": 184 },
+            "pos": { "x": 44, "y": 25 },
+            "styles": { "bg": "rgb(64, 0, 0)" }
+          },
+          {
+            "name": "beatmaps_stats",
+            "type": "RECTANGLE",
+            "size": { "w": 741, "h": 83 },
+            "pos": { "x": 44, "y": 126.18 },
+            "styles": { "bg": "rgb(16, 16, 16)" }
+          },
+          {
+            "name": "beatmaps_name",
+            "type": "TEXT",
+            "size": { "w": 698, "h": 40 },
+            "pos": { "x": 65.33, "y": 43.14 },
+            "content": "SUDDEN DEATH",
+            "styles": { "bg": "rgb(255, 255, 255)", "text": { "family": "Inter", "size": 27, "weight": "700", "align": "left" } }
+          },
+          {
+            "name": "beatmapper_name",
+            "type": "TEXT",
+            "size": { "w": 196, "h": 16 },
+            "pos": { "x": 65.33, "y": 83.61 },
+            "content": "WINTREL",
+            "styles": { "bg": "rgb(255, 255, 255)", "text": { "family": "Inter", "size": 23, "weight": "700", "align": "left" } }
+          },
+          {
+            "name": "notes",
+            "type": "TEXT",
+            "size": { "w": 53, "h": 20 },
+            "pos": { "x": 55.45, "y": 151.3 },
+            "content": "NOTES",
+            "styles": { "bg": "rgb(255, 255, 255)", "text": { "family": "Inter", "size": 18, "weight": "700", "align": "center" } }
+          },
+          {
+            "name": "hold_notes",
+            "type": "TEXT",
+            "size": { "w": 98, "h": 20 },
+            "pos": { "x": 115, "y": 151 },
+            "content": "HOLD NOTES",
+            "styles": { "bg": "rgb(255, 255, 255)", "text": { "family": "Inter", "size": 18, "weight": "700", "align": "center" } }
+          },
+          {
+            "name": "hp_drain",
+            "type": "TEXT",
+            "size": { "w": 78, "h": 20 },
+            "pos": { "x": 686.13, "y": 151.3 },
+            "content": "HP DRAIN",
+            "styles": { "bg": "rgb(255, 255, 255)", "text": { "family": "Inter", "size": 18, "weight": "700", "align": "center" } }
+          },
+          {
+            "name": "bpm",
+            "type": "TEXT",
+            "size": { "w": 78, "h": 20 },
+            "pos": { "x": 613.28, "y": 151.3 },
+            "content": "BPM",
+            "styles": { "bg": "rgb(255, 255, 255)", "text": { "family": "Inter", "size": 18, "weight": "700", "align": "center" } }
+          },
+          {
+            "name": "length",
+            "type": "TEXT",
+            "size": { "w": 78, "h": 20 },
+            "pos": { "x": 558, "y": 151.3 },
+            "content": "LENGTH",
+            "styles": { "bg": "rgb(255, 255, 255)", "text": { "family": "Inter", "size": 18, "weight": "700", "align": "center" } }
+          },
+          {
+            "name": "beatmap_notes_amount",
+            "type": "TEXT",
+            "size": { "w": 33, "h": 20 },
+            "pos": { "x": 65.33, "y": 170.83 },
+            "content": "999",
+            "styles": { "bg": "rgb(255, 255, 255)", "text": { "family": "Inter", "size": 20, "weight": "500", "align": "center" } }
+          },
+          {
+            "name": "beatmap_hold_notes_amount",
+            "type": "TEXT",
+            "size": { "w": 33, "h": 20 },
+            "pos": { "x": 146, "y": 170.83 },
+            "content": "999",
+            "styles": { "bg": "rgb(255, 255, 255)", "text": { "family": "Inter", "size": 20, "weight": "500", "align": "center" } }
+          },
+          {
+            "name": "hp_drain",
+            "type": "TEXT",
+            "size": { "w": 33, "h": 20 },
+            "pos": { "x": 708.51, "y": 170.83 },
+            "content": "3",
+            "styles": { "bg": "rgb(255, 255, 255)", "text": { "family": "Inter", "size": 20, "weight": "500", "align": "center" } }
+          },
+          {
+            "name": "beatmap_bpm",
+            "type": "TEXT",
+            "size": { "w": 33, "h": 20 },
+            "pos": { "x": 635.66, "y": 170.83 },
+            "content": "154",
+            "styles": { "bg": "rgb(255, 255, 255)", "text": { "family": "Inter", "size": 20, "weight": "500", "align": "center" } }
+          },
+          {
+            "name": "beatmap_length",
+            "type": "TEXT",
+            "size": { "w": 33, "h": 20 },
+            "pos": { "x": 580.5, "y": 170.83 },
+            "content": "1:30",
+            "styles": { "bg": "rgb(255, 255, 255)", "text": { "family": "Inter", "size": 20, "weight": "500", "align": "center" } }
+          }
+        ]
+      }
+    ]
+  },
+  "summary": {
+    "components": 0,
+    "instances": 0,
+    "frames": 1,
+    "texts": 20,
+    "hasAutoLayout": true,
+    "hasEffects": true
+  }
+}

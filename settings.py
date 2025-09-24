@@ -17,7 +17,8 @@ DEFAULT_ACCENT_COLOR = (200, 30, 30)
 
 # --- Gameplay Settings ---
 # These are crucial for the gameplay to function correctly.
-# Feel free to tweak these values to change the game's feel!
+
+LANES = 4
 LANE_WIDTH = 100
 RECEPTOR_Y = SCREEN_HEIGHT - 120 # How high the hit line is from the bottom
 NOTE_SPEED = 9 # Higher numbers make notes fall faster

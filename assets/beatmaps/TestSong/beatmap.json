@@ -1,0 +1,24 @@
+{
+    "title": "Test Song",
+    "artist": "BLOOMIFY Engine",
+    "mapper": "Developer",
+    "audio_path": "song.mp3",
+    "preview_time_ms": 30000,
+    "image_path": "art.png",
+    "bpm": 120,
+    "offset_ms": 500,
+    "notes": [
+        { "time": 1000, "lane": 0 },
+        { "time": 1250, "lane": 1 },
+        { "time": 1500, "lane": 2 },
+        { "time": 1750, "lane": 3 },
+        { "time": 2000, "lane": 0 },
+        { "time": 2000, "lane": 1 },
+        { "time": 2500, "lane": 2 },
+        { "time": 2500, "lane": 3 },
+        { "time": 3000, "lane": 1 },
+        { "time": 3000, "lane": 2 },
+        { "time": 3500, "lane": 0 },
+        { "time": 3500, "lane": 3 }
+    ]
+}

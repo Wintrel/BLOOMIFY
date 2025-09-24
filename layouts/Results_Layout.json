@@ -1,0 +1,142 @@
+{
+  "metadata": {
+    "exportedAt": "2025-09-23T19:35:59.986Z",
+    "componentName": "Frame 54",
+    "totalElements": 26,
+    "nestingDepth": 2,
+    "plugin": "Figma to JSON Exporter"
+  },
+  "structure": {
+    "name": "frame-54",
+    "type": "FRAME",
+    "size": { "w": 1920, "h": 1080 },
+    "children": [
+      {
+        "name": "score_grade",
+        "type": "TEXT",
+        "size": { "w": 526, "h": 269 },
+        "pos": { "x": 718, "y": 147 },
+        "content": "S",
+        "styles": { "bg": "rgb(255, 255, 255)", "text": { "family": "Inter", "size": 128, "weight": "700", "align": "center" } }
+      },
+      {
+        "name": "end_score",
+        "type": "TEXT",
+        "size": { "w": 726, "h": 72 },
+        "pos": { "x": 597, "y": 483 },
+        "content": "528,294",
+        "styles": { "bg": "rgb(255, 255, 255)", "text": { "family": "Inter", "size": 64, "weight": "700", "align": "center" } }
+      },
+      {
+        "name": "end_accuracy",
+        "type": "TEXT",
+        "size": { "w": 314, "h": 50 },
+        "pos": { "x": 803, "y": 555 },
+        "content": "99.23%",
+        "styles": { "bg": "rgb(255, 255, 255)", "text": { "family": "Inter", "size": 32, "weight": "700", "align": "center" } }
+      },
+      {
+        "name": "beatmaps_name",
+        "type": "TEXT",
+        "size": { "w": 359, "h": 71 },
+        "pos": { "x": 51, "y": 48 },
+        "content": "SUDDEN DEATH",
+        "styles": { "bg": "rgb(255, 255, 255)", "text": { "family": "Inter", "size": 32, "weight": "700", "align": "center" } }
+      },
+      {
+        "name": "beatmapper_name",
+        "type": "TEXT",
+        "size": { "w": 204, "h": 56 },
+        "pos": { "x": 128, "y": 91 },
+        "content": "WINTREL",
+        "styles": { "bg": "rgb(255, 255, 255)", "text": { "family": "Inter", "size": 20, "weight": "700", "align": "center" } }
+      },
+      {
+        "name": "great_judgements",
+        "type": "TEXT",
+        "size": { "w": 100, "h": 31 },
+        "pos": { "x": 761, "y": 777 },
+        "content": "999",
+        "styles": { "bg": "rgb(255, 255, 255)", "text": { "family": "Inter", "size": 14, "weight": "700", "align": "center" } }
+      },
+      {
+        "name": "judgement_great",
+        "type": "TEXT",
+        "size": { "w": 100, "h": 31 },
+        "pos": { "x": 761, "y": 734 },
+        "content": "GREAT",
+        "styles": { "bg": "rgb(0, 255, 8)", "text": { "family": "Inter", "size": 14, "weight": "700", "align": "center" } }
+      },
+      {
+        "name": "judgement_background",
+        "type": "RECTANGLE",
+        "size": { "w": 1120, "h": 122 },
+        "pos": { "x": 400, "y": 710 },
+        "styles": { "bg": "rgb(44, 44, 44)", "radius": 30 }
+      },
+      {
+        "name": "good_judgement",
+        "type": "TEXT",
+        "size": { "w": 100, "h": 31 },
+        "pos": { "x": 864, "y": 777 },
+        "content": "999",
+        "styles": { "bg": "rgb(255, 255, 255)", "text": { "family": "Inter", "size": 14, "weight": "700", "align": "center" } }
+      },
+      {
+        "name": "meh_judgement",
+        "type": "TEXT",
+        "size": { "w": 100, "h": 31 },
+        "pos": { "x": 966, "y": 777 },
+        "content": "999",
+        "styles": { "bg": "rgb(255, 255, 255)", "text": { "family": "Inter", "size": 14, "weight": "700", "align": "center" } }
+      },
+      {
+        "name": "miss_judgement",
+        "type": "TEXT",
+        "size": { "w": 100, "h": 31 },
+        "pos": { "x": 1069, "y": 777 },
+        "content": "999",
+        "styles": { "bg": "rgb(255, 255, 255)", "text": { "family": "Inter", "size": 14, "weight": "700", "align": "center" } }
+      },
+      {
+        "name": "judgement_good",
+        "type": "TEXT",
+        "size": { "w": 100, "h": 31 },
+        "pos": { "x": 864, "y": 734 },
+        "content": "GOOD",
+        "styles": { "bg": "rgb(0, 119, 255)", "text": { "family": "Inter", "size": 14, "weight": "700", "align": "center" } }
+      },
+      {
+        "name": "judgement_meh",
+        "type": "TEXT",
+        "size": { "w": 100, "h": 31 },
+        "pos": { "x": 966, "y": 734 },
+        "content": "MEH",
+        "styles": { "bg": "rgb(200, 147, 0)", "text": { "family": "Inter", "size": 14, "weight": "700", "align": "center" } }
+      },
+      {
+        "name": "judgement_miss",
+        "type": "TEXT",
+        "size": { "w": 100, "h": 31 },
+        "pos": { "x": 1069, "y": 734 },
+        "content": "MISS",
+        "styles": { "bg": "rgb(255, 0, 4)", "text": { "family": "Inter", "size": 14, "weight": "700", "align": "center" } }
+      },
+      {
+        "name": "back_button",
+        "type": "RECTANGLE",
+        "size": { "w": 382, "h": 78 },
+        "pos": { "x": 51, "y": 962 },
+        "styles": { "bg": "rgb(32, 32, 32)", "radius": 30 }
+      },
+      {
+        "name": "back",
+        "type": "TEXT",
+        "size": { "w": 332, "h": 57 },
+        "pos": { "x": 76, "y": 972 },
+        "content": "BACK",
+        "styles": { "bg": "rgb(255, 255, 255)", "text": { "family": "Inter", "size": 24, "weight": "700", "align": "center" } }
+      }
+    ]
+  }
+}

@@ -1,0 +1,85 @@
+{
+    "info_panel_bg": {
+        "type": "Panel",
+        "params": {
+            "pos": [40, 50],
+            "size": [450, 160],
+            "color": [15, 15, 15, 200],
+            "border_radius": 12
+        }
+    },
+    "song_title_label": {
+        "type": "Label",
+        "params": {
+            "pos": [65, 90],
+            "text": "Song Title",
+            "font_size": 42,
+            "color": [255, 255, 255],
+            "text_rect_origin": "topleft"
+        }
+    },
+    "artist_label": {
+        "type": "Label",
+        "params": {
+            "pos": [65, 120],
+            "text": "Artist Name",
+            "font_size": 24,
+            "color": [180, 180, 180],
+            "text_rect_origin": "topleft"
+        }
+    },
+    "notes_label": {
+        "type": "Label",
+        "params": {
+            "pos": [115, 180],
+            "text": "NOTES",
+            "font_size": 16,
+            "color": [150, 150, 150]
+        }
+    },
+    "notes_value": {
+        "type": "Label",
+        "params": {
+            "pos": [115, 203],
+            "text": "0",
+            "font_size": 20,
+            "color": [255, 255, 255]
+        }
+    },
+    "length_label": {
+        "type": "Label",
+        "params": {
+            "pos": [265, 180],
+            "text": "LENGTH",
+            "font_size": 16,
+            "color": [150, 150, 150]
+        }
+    },
+    "length_value": {
+        "type": "Label",
+        "params": {
+            "pos": [265, 203],
+            "text": "0:00",
+            "font_size": 20,
+            "color": [255, 255, 255]
+        }
+    },
+    "bpm_label": {
+        "type": "Label",
+        "params": {
+            "pos": [415, 180],
+            "text": "BPM",
+            "font_size": 16,
+            "color": [150, 150, 150]
+        }
+    },
+    "bpm_value": {
+        "type": "Label",
+        "params": {
+            "pos": [415, 203],
+            "text": "0",
+            "font_size": 20,
+            "color": [255, 255, 255]
+        }
+    }
+}

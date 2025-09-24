@@ -1,0 +1,120 @@
+{
+  "metadata": {
+    "exportedAt": "2025-09-23T19:39:42.200Z",
+    "componentName": "Frame 56",
+    "totalElements": 4,
+    "nestingDepth": 2,
+    "plugin": "Figma to JSON Exporter"
+  },
+  "designTokens": {
+    "colors": {
+      "color-rgb(0, 0, 0)": "rgb(0, 0, 0)",
+      "color-rgb(255, 255, 255)": "rgb(255, 255, 255)"
+    },
+    "fonts": {
+      "poppins": {
+        "family": "Poppins",
+        "sizes": {
+          "size-128": "128px",
+          "size-20": "20px"
+        },
+        "weights": {
+          "weight-700": "700"
+        }
+      }
+    },
+    "spacing": {},
+    "effects": {}
+  },
+  "structure": {
+    "name": "frame-56",
+    "type": "FRAME",
+    "size": {
+      "w": 1920,
+      "h": 1080
+    },
+    "styles": {
+      "layout": {
+        "direction": "row",
+        "gap": 0,
+        "align": {
+          "main": "start",
+          "cross": "start"
+        }
+      }
+    },
+    "children": [
+      {
+        "name": "black_background",
+        "type": "RECTANGLE",
+        "size": {
+          "w": 1920,
+          "h": 1080
+        },
+        "styles": {
+          "bg": "rgb(0, 0, 0)"
+        }
+      },
+      {
+        "name": "game_name",
+        "type": "TEXT",
+        "size": {
+          "w": 969,
+          "h": 365,
+        "position": {
+            "x": 475,
+            "y": 357
+        }
+        },
+        "content": "BLOOMIFY",
+        "styles": {
+          "bg": "rgb(255, 255, 255)",
+          "text": {
+            "family": "Poppins",
+            "size": 128,
+            "weight": "700",
+            "align": "center"
+          },
+          "border": {
+            "width": 3,
+            "color": "rgb(255, 255, 255)"
+          }
+        }
+      },
+      {
+        "name": "game_desc",
+        "type": "TEXT",
+        "size": {
+          "w": 699,
+          "h": 81,
+        "position": {
+            "x": 610,
+            "y": 606
+        }
+        },
+        "content": "an rhythm game",
+        "styles": {
+          "bg": "rgb(255, 255, 255)",
+          "text": {
+            "family": "Poppins",
+            "size": 20,
+            "weight": "700",
+            "align": "center"
+          },
+          "border": {
+            "width": 4,
+            "color": "rgb(255, 255, 255)"
+          }
+        }
+      }
+    ]
+  },
+  "summary": {
+    "components": 0,
+    "instances": 0,
+    "frames": 1,
+    "texts": 2,
+    "hasAutoLayout": true,
+    "hasEffects": false
+  }
+}

@@ -32,7 +32,6 @@ class LoadingScreen(BaseState):
         super().update(dt) # This is crucial to update the transition timers
         self.time_active += dt
 
-        # --- FIX: Only trigger the transition out ONCE ---
         # We check if the state is 'static' (not already transitioning)
         if self.transition_state == "static" and self.time_active >= 1500: # 1.5 seconds
             self.go_to_next_state()

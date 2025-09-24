@@ -1,0 +1,118 @@
+{
+  "metadata": {
+    "exportedAt": "2025-09-23T19:38:03.819Z",
+    "componentName": "Frame 55",
+    "totalElements": 7,
+    "nestingDepth": 2,
+    "plugin": "Figma to JSON Exporter"
+  },
+  "designTokens": {
+    "colors": {
+      "color-rgb(0, 0, 0)": "rgb(0, 0, 0)",
+      "color-rgb(217, 217, 217)": "rgb(217, 217, 217)",
+      "color-rgb(255, 255, 255)": "rgb(255, 255, 255)"
+    },
+    "fonts": {
+      "inter": {
+        "family": "Inter",
+        "sizes": {
+          "size-32": "32px",
+          "size-20": "20px"
+        },
+        "weights": {
+          "weight-700": "700"
+        }
+      }
+    },
+    "spacing": {},
+    "effects": {}
+  },
+  "structure": {
+    "name": "frame-55",
+    "type": "FRAME",
+    "size": {
+      "w": 1920,
+      "h": 1080
+    },
+    "styles": {
+      "layout": {
+        "direction": "row",
+        "gap": 0,
+        "align": {
+          "main": "start",
+          "cross": "start"
+        }
+      }
+    },
+    "children": [
+      {
+        "name": "IMG_beatmap_art_placeholder",
+        "type": "RECTANGLE",
+        "size": {
+          "w": 572,
+          "h": 109,
+          "position": {
+            "x": 674,
+            "y": 467
+          }
+        },
+        "styles": {
+          "bg": "rgb(217, 217, 217)",
+          "radius": 20
+        }
+      },
+      {
+        "name": "beatmaps_name",
+        "type": "TEXT",
+        "size": {
+          "w": 359,
+          "h": 71,
+          "position": {
+            "x": 780,
+            "y": 323
+          }
+        },
+        "content": "SUDDEN DEATH",
+        "styles": {
+          "bg": "rgb(255, 255, 255)",
+          "text": {
+            "family": "Inter",
+            "size": 32,
+            "weight": "700",
+            "align": "center"
+          }
+        }
+      },
+      {
+        "name": "beatmapper_name",
+        "type": "TEXT",
+        "size": {
+          "w": 204,
+          "h": 56,
+          "position": {
+            "x": 858,
+            "y": 366
+          }
+        },
+        "content": "WINTREL",
+        "styles": {
+          "bg": "rgb(255, 255, 255)",
+          "text": {
+            "family": "Inter",
+            "size": 20,
+            "weight": "700",
+            "align": "center"
+          }
+        }
+      }
+    ]
+  },
+  "summary": {
+    "components": 0,
+    "instances": 0,
+    "frames": 1,
+    "texts": 2,
+    "hasAutoLayout": true,
+    "hasEffects": true
+  }
+}

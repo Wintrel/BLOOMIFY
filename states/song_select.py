@@ -30,7 +30,7 @@ class SongSelect(BaseState):
 
         if self.songs:
             self.load_song_assets()
-            self.select_song(0)  # This will also start the first song's preview
+            self.select_song(0)
         else:
             self.selected_song = {"title": "No Songs Found", "artist": "Please add songs to assets/songs", "bpm": "N/A",
                                   "length": "N/A", "notes": 0}
@@ -67,7 +67,7 @@ class SongSelect(BaseState):
                                                    "blurred" not in f.lower() and f.lower().endswith(
                                                        ('.png', '.jpg', '.jpeg'))), None)
 
-                        # --- NEW: Get audio file path from beatmap ---
+
                         audio_filename = beatmap_data.get("audio_path")
 
                         song_entry = {
@@ -145,7 +145,7 @@ class SongSelect(BaseState):
             self.background_img = pygame.Surface(self.screen_rect.size);
             self.background_img.fill((20, 20, 20))
 
-        # --- NEW: Play the song preview ---
+
         self.play_song_preview()
 
     def play_song_preview(self):
@@ -162,11 +162,11 @@ class SongSelect(BaseState):
             except pygame.error as e:
                 print(f"Error playing music file {audio_path}: {e}")
         else:
-            pygame.mixer.music.stop()  # Stop music if the selected song has no audio
+            pygame.mixer.music.stop()
 
     def get_event(self, event):
         super().get_event(event)
-        # --- FIX: Use "static" to match our transition system ---
+
         if not self.songs or self.transition_state != "static": return
 
         if event.type == pygame.KEYUP:
@@ -177,12 +177,12 @@ class SongSelect(BaseState):
                 new_index = (self.selected_index - 1 + len(self.songs)) % len(self.songs)
                 self.select_song(new_index)
             elif event.key == pygame.K_RETURN:
-                # --- NEW: Fade out music before transitioning ---
+
                 pygame.mixer.music.fadeout(500)
 
                 self.persist["selected_song_data"] = self.selected_song
                 self.persist["selected_song_data"]["final_background"] = self.background_img
-                # --- FIX: Use go_to_next_state to match our transition system ---
+
                 self.go_to_next_state()
 
     def draw(self, surface):
