@@ -2,62 +2,53 @@ import pygame
 from settings import *
 from states.base_state import BaseState
 from ui.ui_manager import UIManager
-from ui.label import Label
-
 
 class MainMenuState(BaseState):
     def __init__(self, state_manager):
         super(MainMenuState, self).__init__(state_manager)
         self.next_state = "SONG_SELECT"
-
+        
         self.ui_manager = UIManager()
         self.ui_manager.load_layout("layouts/Main_Menu_Layout.json")
 
-        # --- Find UI elements by name for animation ---
-        self.subtitle_label = self.ui_manager.get_element_by_name("game_desc")
-        self.click_prompt = self.ui_manager.get_element_by_name("click_prompt")
-
-        # --- Animation state ---
-        self.time_active = 0
-        self.click_alpha = 0
-        self.click_pulse_dir = 1
-        self.animation_finished = False
-
-    def update(self, dt):
-        super().update(dt)
-        self.ui_manager.update(dt)
-        self.time_active += dt / 1000.0
-
-        # Simple delay before showing the click prompt
-        if not self.animation_finished and self.time_active > 1.5:
-            self.animation_finished = True
-
-        if self.animation_finished and self.click_prompt:
-            # Pulsing alpha animation for the "click to bloom" text
-            pulse_speed = 300
-            self.click_alpha += self.click_pulse_dir * pulse_speed * (dt / 1000.0)
-            if self.click_alpha >= 255:
-                self.click_alpha = 255
-                self.click_pulse_dir = -1
-            elif self.click_alpha <= 50:
-                self.click_alpha = 50
-                self.click_pulse_dir = 1
-
-            # This assumes your Label element can have its color's alpha changed
-            # A more robust system would be to update the Label's color property directly.
-            # For now, let's just make sure it exists before trying to access it.
-            if hasattr(self.click_prompt, 'color'):
-                original_color = self.click_prompt.color
-                self.click_prompt.color = (original_color[0], original_color[1], original_color[2],
-                                           int(self.click_alpha))
-                self.click_prompt.create_text_surface()
+        self.is_transitioning_out = False
+        self.transition_anim_duration = 0.5 # seconds
 
     def get_event(self, event):
         super().get_event(event)
-        if self.animation_finished:
+        if not self.is_transitioning_out and self.transition_state == "static":
             if event.type == pygame.KEYUP or event.type == pygame.MOUSEBUTTONUP:
-                if self.transition_state == "static":
-                    self.go_to_next_state()
+                self.trigger_transition_out()
+
+    def trigger_transition_out(self):
+        """ Kicks off the slide-out animations for all UI elements. """
+        self.is_transitioning_out = True
+        # --- FIX: This is the crucial missing signal ---
+        # This tells the base state to start its own fade-out timer.
+        self.go_to_next_state() 
+        
+        # Animate title up and off-screen
+        title = self.ui_manager.get_element_by_name("game_name")
+        if title:
+            target_y = -title.size[1]
+            title.animate_position((title.absolute_pos[0], target_y), self.transition_anim_duration)
+            
+        # Animate subtitle down and off-screen
+        subtitle = self.ui_manager.get_element_by_name("game_desc")
+        if subtitle:
+            target_y = self.screen_rect.height
+            subtitle.animate_position((subtitle.absolute_pos[0], target_y), self.transition_anim_duration)
+            
+        # Animate prompt down and off-screen
+        prompt = self.ui_manager.get_element_by_name("click_prompt")
+        if prompt:
+            target_y = self.screen_rect.height
+            prompt.animate_position((prompt.absolute_pos[0], target_y), self.transition_anim_duration)
+            
+    def update(self, dt):
+        super().update(dt)
+        self.ui_manager.update(dt)
+        # The base_state's update now correctly handles setting self.done = True
 
     def draw(self, surface):
         surface.fill(BLACK)

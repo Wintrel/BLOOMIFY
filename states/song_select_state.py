@@ -9,40 +9,88 @@ from ui.label import Label
 from utils import draw_text
 import asset_loader
 
-
 class SongSelectState(BaseState):
     def __init__(self, state_manager):
         super(SongSelectState, self).__init__(state_manager)
         self.next_state = "LOADING"
-
+        
         self.ui_manager = UIManager()
         self.ui_manager.load_layout("layouts/Song_Select_Layout.json")
 
-        self.banner_placeholder = self.ui_manager.get_element_by_name("song_banner")
-        if self.banner_placeholder:
-            self.banner_placeholder.visible = False
+        self.info_panel = self.ui_manager.get_element_by_name("info_panel")
+        self.song_list_group = self.ui_manager.get_element_by_name("song_banner")
+        
+        if self.song_list_group:
+            self.song_list_group.visible = False
 
         self.font_banner_title = asset_loader.load_font("Inter", 22)
         self.font_banner_artist = asset_loader.load_font("Inter", 16)
-
         self.songs = []
         self.selected_index = 0
         self.background_img = pygame.Surface(self.screen_rect.size)
         self.background_img.fill(BLACK)
-
         self.target_scroll_y = 0
         self.current_scroll_y = 0
+        
+        self.is_transitioning_out = False
 
         self.scan_for_songs()
         self.load_all_song_assets()
 
         if self.songs:
             self.select_song(0, instant=True)
+        
+    def startup(self, persistent):
+        super().startup(persistent)
+
+        # Reload the layout fresh each time this state is entered
+        self.ui_manager = UIManager()
+        self.ui_manager.load_layout("layouts/Song_Select_Layout.json")
+
+        # Re-fetch UI references
+        self.info_panel = self.ui_manager.get_element_by_name("info_panel")
+        self.song_list_group = self.ui_manager.get_element_by_name("song_banner")
+        if self.song_list_group:
+            self.song_list_group.visible = False
+
+        self.is_transitioning_out = False
+        self.trigger_transition_in()
+
+        # Restore current song selection so UI isn’t blank
+        if self.songs:
+            self.select_song(self.selected_index, instant=True)
+
+
+    def trigger_transition_in(self):
+        duration = 0.6
+        if self.info_panel:
+            target_x = self.info_panel.absolute_pos[0] 
+            self.info_panel.absolute_pos[0] = -self.info_panel.size[0]
+            self.info_panel.animate_position((target_x, self.info_panel.absolute_pos[1]), duration)
+
+        if self.song_list_group:
+            target_x = self.song_list_group.absolute_pos[0]
+            self.song_list_group.absolute_pos[0] = self.screen_rect.width
+            self.song_list_group.animate_position((target_x, self.song_list_group.absolute_pos[1]), duration)
+    
+    def trigger_transition_out(self):
+        """ Animates the UI elements off the screen. """
+        self.is_transitioning_out = True
+        self.go_to_next_state() # Start the base state's fade timer
+        duration = 0.5
+
+        if self.info_panel:
+            target_x = -self.info_panel.size[0]
+            self.info_panel.animate_position((target_x, self.info_panel.absolute_pos[1]), duration)
+
+        if self.song_list_group:
+            target_x = self.screen_rect.width
+            self.song_list_group.animate_position((target_x, self.song_list_group.absolute_pos[1]), duration)
+
 
     def scan_for_songs(self):
         songs_path = "assets/beatmaps"
         if not os.path.exists(songs_path): return
-
         for folder_name in os.listdir(songs_path):
             folder_path = os.path.join(songs_path, folder_name)
             if os.path.isdir(folder_path):
@@ -51,8 +99,7 @@ class SongSelectState(BaseState):
                     try:
                         with open(beatmap_path, 'r', encoding='utf-8') as f:
                             beatmap_data = json.load(f)
-                        image_file = next(
-                            (f for f in os.listdir(folder_path) if f.lower().endswith(('.png', '.jpg', '.jpeg'))), None)
+                        image_file = next((f for f in os.listdir(folder_path) if f.lower().endswith(('.png', '.jpg', '.jpeg'))), None)
                         song_entry = {
                             "title": beatmap_data.get("title", "N/A"), "artist": beatmap_data.get("artist", "N/A"),
                             "bpm": beatmap_data.get("bpm", "N/A"), "length": beatmap_data.get("length", "N/A"),
@@ -66,7 +113,7 @@ class SongSelectState(BaseState):
                         print(f"Error loading song {folder_name}: {e}")
 
     def load_all_song_assets(self):
-        banner_size = self.banner_placeholder.size if self.banner_placeholder else (740, 70)
+        banner_size = self.song_list_group.size if self.song_list_group else (740, 70)
         for i in range(len(self.songs)):
             if self.songs[i]["image_path"]:
                 original_image = asset_loader.load_image(self.songs[i]["image_path"])
@@ -77,51 +124,38 @@ class SongSelectState(BaseState):
                 else:
                     self.songs[i]["banner_img"], self.songs[i]["accent_color"] = None, DEFAULT_ACCENT_COLOR
             else:
-                self.songs[i]["original_img"], self.songs[i]["banner_img"], self.songs[i][
-                    "accent_color"] = None, None, DEFAULT_ACCENT_COLOR
+                self.songs[i]["original_img"], self.songs[i]["banner_img"], self.songs[i]["accent_color"] = None, None, DEFAULT_ACCENT_COLOR
 
     def select_song(self, index, instant=False):
         if not self.songs or not (0 <= index < len(self.songs)): return
-
         self.selected_index = index
         song_data = self.songs[index]
-
         banner_h_margin = 80
         self.target_scroll_y = self.screen_rect.centery - (self.selected_index * banner_h_margin)
-        if instant:
-            self.current_scroll_y = self.target_scroll_y
-
+        if instant: self.current_scroll_y = self.target_scroll_y
         if song_data.get("original_img"):
-            self.background_img = asset_loader.create_blurred_background(song_data["original_img"],
-                                                                         self.screen_rect.size)
-        else:
-            self.background_img.fill(BLACK)
-
+            self.background_img = asset_loader.create_blurred_background(song_data["original_img"], self.screen_rect.size)
+        else: self.background_img.fill(BLACK)
         ui_text_map = {
-            "Beatmaps_name": song_data["title"],
-            "Beatmapper_Name": song_data["artist"],
-            "beatmap_bpm": str(song_data["bpm"]),
-            "beatmap_length": str(song_data["length"]),
+            "Beatmaps_name": song_data["title"], "Beatmapper_Name": song_data["artist"],
+            "beatmap_bpm": str(song_data["bpm"]), "beatmap_length": str(song_data["length"]),
             "beatmap_notes_amount": str(song_data["notes"]),
         }
         for name, text in ui_text_map.items():
             element = self.ui_manager.get_element_by_name(name)
             if element and hasattr(element, 'set_text'): element.set_text(text)
-
         artwork_placeholder = self.ui_manager.get_element_by_name("IMG_beatmap_art_placeholder")
         if artwork_placeholder and isinstance(artwork_placeholder, ImagePanel):
             artwork_placeholder.set_image(song_data.get("original_img"))
-
         audio_path = song_data["audio_path"]
         if os.path.exists(audio_path):
             pygame.mixer.music.load(audio_path)
             pygame.mixer.music.play(start=song_data["preview_time_ms"] / 1000.0)
-        else:
-            pygame.mixer.music.stop()
+        else: pygame.mixer.music.stop()
 
     def get_event(self, event):
         super().get_event(event)
-        if self.transition_state == "static" and self.songs:
+        if self.transition_state == "static" and self.songs and not self.is_transitioning_out:
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_DOWN:
                     self.select_song((self.selected_index + 1) % len(self.songs))
@@ -131,7 +165,7 @@ class SongSelectState(BaseState):
                     self.persist["selected_song_data"] = self.songs[self.selected_index]
                     self.persist["final_background"] = self.background_img
                     pygame.mixer.music.fadeout(500)
-                    self.go_to_next_state()
+                    self.trigger_transition_out()
 
     def update(self, dt):
         super().update(dt)
@@ -140,41 +174,32 @@ class SongSelectState(BaseState):
         self.current_scroll_y += (self.target_scroll_y - self.current_scroll_y) * scroll_speed * (dt / 1000.0)
 
     def draw(self, surface):
-        surface.blit(self.background_img, (0, 0))
-        self.ui_manager.draw(surface)
+        surface.blit(self.background_img, (0,0))
+        self.ui_manager.draw(surface) 
         self.draw_song_list(surface)
 
     def draw_song_list(self, surface):
-        if not self.songs or not self.banner_placeholder: return
-
-        list_x = self.banner_placeholder.absolute_pos[0]
+        if not self.songs or not self.song_list_group: return
+        list_x = self.song_list_group.absolute_pos[0]
         banner_h_margin = 80
-
         for i, song in enumerate(self.songs):
             y_pos = self.current_scroll_y + (i * banner_h_margin) - (banner_h_margin / 2)
-
-            if y_pos > self.screen_rect.height or y_pos < -banner_h_margin:
-                continue
-
-            banner_rect = pygame.Rect(list_x, y_pos, self.banner_placeholder.size[0], self.banner_placeholder.size[1])
-
+            if y_pos > self.screen_rect.height or y_pos < -banner_h_margin: continue
+            banner_rect = pygame.Rect(list_x, y_pos, self.song_list_group.size[0], self.song_list_group.size[1])
             if song.get("banner_img"):
                 clip_surface = pygame.Surface(banner_rect.size, pygame.SRCALPHA)
                 pygame.draw.rect(clip_surface, WHITE, (0, 0, *banner_rect.size), border_radius=10)
                 clip_surface.blit(song["banner_img"], (0, 0), special_flags=pygame.BLEND_RGBA_MIN)
                 surface.blit(clip_surface, banner_rect.topleft)
             else:
-                pygame.draw.rect(surface, (30, 30, 30), banner_rect, border_radius=10)
-
+                pygame.draw.rect(surface, (30,30,30), banner_rect, border_radius=10)
             overlay = pygame.Surface(banner_rect.size, pygame.SRCALPHA)
-            pygame.draw.rect(overlay, (0, 0, 0, 150), (0, 0, *banner_rect.size), border_radius=10)
+            pygame.draw.rect(overlay, (0,0,0,150), (0,0,*banner_rect.size), border_radius=10)
             surface.blit(overlay, banner_rect.topleft)
-
-            draw_text(surface, song["title"], (banner_rect.x + 20, banner_rect.centery - 10),
+            draw_text(surface, song["title"], (banner_rect.x + 20, banner_rect.centery - 10), 
                       self.font_banner_title, WHITE, text_rect_origin='topleft')
-            draw_text(surface, song["artist"], (banner_rect.x + 20, banner_rect.centery + 12),
+            draw_text(surface, song["artist"], (banner_rect.x + 20, banner_rect.centery + 12), 
                       self.font_banner_artist, (200, 200, 200), text_rect_origin='topleft')
-
             if i == self.selected_index:
                 pygame.draw.rect(surface, song["accent_color"], banner_rect, 3, border_radius=10)
 
