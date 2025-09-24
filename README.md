@@ -22,7 +22,3 @@ Bloomify introduces several unique mechanics to keep you on your toes.
 * Fake Notes: Notes that vanish right before you attempt to hit them, testing your reflexes and anticipation.
 
 * Lane Expansion: Lanes can widen or shrink, forcing you to adjust your accuracy in real-time.
-
-
-### **Contributing**
-We welcome contributions! If you have ideas for new chaotic mechanics, feature improvements, or bug fixes, feel free to fork the repository and submit a pull request.
