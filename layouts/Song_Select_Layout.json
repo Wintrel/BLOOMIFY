@@ -229,7 +229,7 @@
             "styles": { "bg": "rgb(16, 16, 16)" }
           },
           {
-            "name": "beatmaps_name",
+            "name": "Beatmaps_name",
             "type": "TEXT",
             "size": { "w": 698, "h": 40 },
             "pos": { "x": 65.33, "y": 43.14 },
@@ -237,7 +237,7 @@
             "styles": { "bg": "rgb(255, 255, 255)", "text": { "family": "Inter", "size": 27, "weight": "700", "align": "left" } }
           },
           {
-            "name": "beatmapper_name",
+            "name": "Beatmapper_Name",
             "type": "TEXT",
             "size": { "w": 196, "h": 16 },
             "pos": { "x": 65.33, "y": 83.61 },

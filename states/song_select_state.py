@@ -97,9 +97,8 @@ class SongSelectState(BaseState):
         else:
             self.background_img.fill(BLACK)
 
-        # --- FIX: Use the correct, case-sensitive names from your Figma design ---
         ui_text_map = {
-            "Beatmaps_Name": song_data["title"],
+            "Beatmaps_name": song_data["title"],
             "Beatmapper_Name": song_data["artist"],
             "beatmap_bpm": str(song_data["bpm"]),
             "beatmap_length": str(song_data["length"]),
@@ -109,8 +108,6 @@ class SongSelectState(BaseState):
             element = self.ui_manager.get_element_by_name(name)
             if element and hasattr(element, 'set_text'): element.set_text(text)
 
-        # --- FIX: Look for the placeholder with the required "IMG_" prefix ---
-        # In Figma/JSON, the layer must be named "IMG_beatmap_art_placeholder"
         artwork_placeholder = self.ui_manager.get_element_by_name("IMG_beatmap_art_placeholder")
         if artwork_placeholder and isinstance(artwork_placeholder, ImagePanel):
             artwork_placeholder.set_image(song_data.get("original_img"))

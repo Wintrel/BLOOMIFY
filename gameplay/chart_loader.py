@@ -1,54 +1,39 @@
 import json
-import os
 from gameplay.note import Note
 
 
 class Chart:
-    """ Holds all the data for a single loaded beatmap. """
+    """ A simple container for all the data loaded from a beatmap file. """
 
-    def __init__(self):
-        self.metadata = {}
-        self.notes = []
-        self.mechanic_triggers = []
+    def __init__(self, metadata, notes):
+        self.metadata = metadata
+        self.notes = notes
 
 
-def load_chart(beatmap_path):
-    """
-    Loads a beatmap.json file and parses it into a Chart object.
-    Returns a Chart object or None if loading fails.
-    """
-    if not beatmap_path or not os.path.exists(beatmap_path):
-        print(f"Error: Chart file not found at '{beatmap_path}'")
-        return None
-
+def load_chart(file_path):
+    """ Loads a chart from a .json file, now with hold note support. """
     try:
-        with open(beatmap_path, 'r') as f:
+        with open(file_path, 'r', encoding='utf-8') as f:
             data = json.load(f)
 
-        chart = Chart()
-
-        # --- Metadata ---
-        chart.metadata = {
-            "title": data.get("title", "Unknown"),
-            "artist": data.get("artist", "Unknown"),
-            "mapper": data.get("mapper", "Unknown"),
-            "bpm": data.get("bpm", 120)
+        metadata = {
+            "title": data.get("title", "N/A"),
+            "artist": data.get("artist", "N/A"),
+            "mapper": data.get("mapper", "N/A"),
         }
 
-        # --- Parse Notes ---
+        notes = []
         for note_data in data.get("notes", []):
-            time_in_seconds = note_data["time"] / 1000.0
-            note = Note(time_in_seconds, note_data["lane"])
-            chart.notes.append(note)
+            notes.append(Note(
+                time=note_data["time"] / 1000.0,
+                lane=note_data["lane"],
+                # Read the optional 'duration'. Default to 0 if not present.
+                duration=note_data.get("duration", 0) / 1000.0
+            ))
 
-        # Sort notes by time, which is crucial for the engine
-        chart.notes.sort(key=lambda n: n.time)
+        return Chart(metadata, notes)
 
-        # --- Parse Mechanics (placeholder for now) ---
-        chart.mechanic_triggers = data.get("mechanics", [])
-
-        return chart
-
-    except (json.JSONDecodeError, KeyError) as e:
-        print(f"Error parsing chart file '{beatmap_path}': {e}")
+    except (FileNotFoundError, json.JSONDecodeError) as e:
+        print(f"Error loading chart '{file_path}': {e}")
         return None
+

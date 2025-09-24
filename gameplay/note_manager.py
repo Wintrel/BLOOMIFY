@@ -6,8 +6,15 @@ from utils import draw_text
 
 KEY_MAP = {0: pygame.K_d, 1: pygame.K_f, 2: pygame.K_j, 3: pygame.K_k}
 TIMING_WINDOWS = {"perfect": 22, "great": 45, "good": 90, "bad": 120, "miss": 150}
-JUDGEMENT_COLORS = {"perfect": (80, 220, 255), "great": (100, 255, 100), "good": (255, 230, 80), "bad": (255, 100, 80),
-                    "miss": (200, 200, 200)}
+JUDGEMENT_COLORS = {
+    "perfect": (80, 220, 255),
+    "great": (100, 255, 100),
+    "good": (255, 230, 80),
+    "bad": (255, 100, 80),
+    "miss": (200, 200, 200),
+}
+HOLD_NOTE_COLOR = (200, 200, 255)
+HELD_NOTE_COLOR = (255, 255, 255)
 
 
 class NoteManager:
@@ -27,29 +34,61 @@ class NoteManager:
             for lane, key in KEY_MAP.items():
                 if event.key == key:
                     self.handle_hit(lane)
+        elif event.type == pygame.KEYUP:
+            for lane, key in KEY_MAP.items():
+                if event.key == key:
+                    self.handle_release(lane)
 
     def update(self, dt):
         dt_seconds = dt / 1000.0
 
-        spawn_window = (self.context.screen_rect.height / (NOTE_SPEED * 100))
+        spawn_window = self.context.screen_rect.height / (NOTE_SPEED * 100)
         while self.notes_to_spawn and self.notes_to_spawn[0].time <= self.context.song_time + spawn_window:
             self.active_notes.append(self.notes_to_spawn.pop(0))
 
+        keys_pressed = pygame.key.get_pressed()
         notes_to_remove = []
+
         for note in self.active_notes:
             time_diff = self.context.song_time - note.time
 
-            if not note.is_hit and not note.is_missed and time_diff * 1000 > TIMING_WINDOWS["miss"]:
-                note.is_missed = True
-                self.context.judgements['miss'] += 1
-                self.context.combo = 0
-                self.context.hits += 1
-                self.show_judgement("miss")
+            # mark as miss if passed
+            if not note.is_hit and not note.is_missed and not note.is_held:
+                if time_diff * 1000 > TIMING_WINDOWS["miss"]:
+                    note.is_missed = True
+                    self.break_combo()
 
+            # hold note logic
+            if note.is_held:
+                if not keys_pressed[KEY_MAP[note.lane]]:
+                    # released too early
+                    if self.context.song_time < note.end_time:
+                        note.is_held = False
+                        self.break_combo()
+                    else:
+                        # released at/after correct end
+                        note.is_held = False
+                        note.is_hit = True
+                        self.context.score += 100
+                elif self.context.song_time >= note.end_time:
+                    # auto-finish if still holding when reaching end
+                    note.is_held = False
+                    note.is_hit = True
+                    self.context.score += 100
+
+            # update note position for rendering
             note.y_pos = (time_diff * (NOTE_SPEED * 100)) + RECEPTOR_Y
 
-            if note.is_hit or note.y_pos > self.context.screen_rect.height + 50:
-                notes_to_remove.append(note)
+            # removal conditions
+            if note.duration == 0:
+                # tap notes: remove when judged or offscreen
+                if note.is_hit or note.y_pos > self.context.screen_rect.height + 200:
+                    notes_to_remove.append(note)
+            else:
+                # hold notes: remove only once tail is fully offscreen
+                tail_end_y = ((self.context.song_time - note.end_time) * (NOTE_SPEED * 100)) + RECEPTOR_Y
+                if tail_end_y > self.context.screen_rect.height + 200:
+                    notes_to_remove.append(note)
 
         self.active_notes = [n for n in self.active_notes if n not in notes_to_remove]
 
@@ -58,43 +97,96 @@ class NoteManager:
 
     def draw(self, surface):
         playfield_x_start = (self.context.screen_rect.width - (LANE_WIDTH * LANES)) / 2
-        for note in self.active_notes:
-            if not note.is_hit:
-                x = playfield_x_start + (note.lane + 0.5) * LANE_WIDTH
-                note_rect = pygame.Rect(0, 0, LANE_WIDTH - 4, 20)
-                note_rect.center = (int(x), int(note.y_pos))
-                pygame.draw.rect(surface, WHITE, note_rect, border_radius=4)
 
+        for note in self.active_notes:
+            # skip only if it's a tap note already judged
+            if note.duration == 0 and note.is_hit:
+                continue
+
+            x = playfield_x_start + (note.lane + 0.5) * LANE_WIDTH
+            head_y = ((self.context.song_time - note.time) * (NOTE_SPEED * 100)) + RECEPTOR_Y
+
+            # --- HOLD NOTE BODY ---
+            if note.duration > 0:
+                tail_end_y = ((self.context.song_time - note.end_time) * (NOTE_SPEED * 100)) + RECEPTOR_Y
+
+                rect_top = min(head_y, tail_end_y)
+                rect_bottom = max(head_y, tail_end_y)
+                rect_height = rect_bottom - rect_top
+
+                if rect_height > 0:
+                    tail_rect = pygame.Rect(0, 0, LANE_WIDTH - 10, rect_height)
+                    tail_rect.midtop = (int(x), int(rect_top))
+                    tail_color = HELD_NOTE_COLOR if note.is_held else HOLD_NOTE_COLOR
+                    pygame.draw.rect(surface, tail_color, tail_rect, border_radius=5)
+
+            # --- NOTE HEAD ---
+            note_rect = pygame.Rect(0, 0, LANE_WIDTH - 4, 20)
+            if note.is_held:
+                note_rect.center = (int(x), RECEPTOR_Y)  # stick head at receptor while held
+            else:
+                note_rect.center = (int(x), int(head_y))
+            pygame.draw.rect(surface, WHITE, note_rect, border_radius=4)
+
+        # --- COMBO & JUDGEMENT TEXT ---
         if self.context.combo > 2:
             combo_pos = (self.context.screen_rect.centerx, self.context.screen_rect.centery - 100)
-            draw_text(surface, str(self.context.combo), combo_pos, self.font_combo, WHITE, text_rect_origin='center')
+            draw_text(
+                surface,
+                str(self.context.combo),
+                combo_pos,
+                self.font_combo,
+                WHITE,
+                text_rect_origin="center",
+            )
 
         if self.judgement_alpha > 0:
             judgement_pos = (self.context.screen_rect.centerx, self.context.screen_rect.centery)
             color_with_alpha = (*self.judgement_color, int(self.judgement_alpha))
-            draw_text(surface, self.judgement_text, judgement_pos, self.font_judgement, color_with_alpha,
-                      text_rect_origin='center')
+            draw_text(
+                surface,
+                self.judgement_text,
+                judgement_pos,
+                self.font_judgement,
+                color_with_alpha,
+                text_rect_origin="center",
+            )
 
     def handle_hit(self, lane):
+        # Find earliest note in this lane that isn't hit, missed, or currently held
+        candidates = [n for n in self.active_notes if n.lane == lane and not n.is_hit and not n.is_missed and not n.is_held]
+        if not candidates:
+            return
+
+        note = candidates[0]
+        time_diff = abs(self.context.song_time - note.time) * 1000
+
+        for judgement, window in TIMING_WINDOWS.items():
+            if time_diff <= window:
+                if judgement != "miss":
+                    self.context.judgements[judgement] += 1
+                    self.context.combo += 1
+                    self.context.max_combo = max(self.context.max_combo, self.context.combo)
+                    self.context.hits += 1
+                    self.context.score += 300 + (20 * self.context.combo)
+                    self.show_judgement(judgement)
+
+                    if note.duration > 0:
+                        note.is_held = True
+                    else:
+                        note.is_hit = True
+                return
+        return
+
+    def handle_release(self, lane):
         for note in self.active_notes:
-            if not note.is_hit and not note.is_missed and note.lane == lane:
-                time_diff = abs(self.context.song_time - note.time) * 1000
-
-                for judgement, window in TIMING_WINDOWS.items():
-                    if time_diff <= window:
-                        if judgement != "miss":
-                            note.is_hit = True
-                            self.context.judgements[judgement] += 1
-                            self.context.combo += 1
-                            self.context.max_combo = max(self.context.max_combo, self.context.combo)
-                            self.context.hits += 1
-
-                            # --- FIX: Add score calculation ---
-                            # Add a base score for the hit plus a bonus for the current combo
-                            self.context.score += 300 + (20 * self.context.combo)
-
-                            self.show_judgement(judgement)
-                        return
+            if note.is_held and note.lane == lane:
+                if self.context.song_time >= note.end_time:
+                    note.is_held = False
+                    note.is_hit = True
+                else:
+                    note.is_held = False
+                    self.break_combo()
                 return
 
     def show_judgement(self, judgement):
@@ -102,3 +194,8 @@ class NoteManager:
         self.judgement_color = JUDGEMENT_COLORS.get(judgement, WHITE)
         self.judgement_alpha = 255
 
+    def break_combo(self):
+        self.context.combo = 0
+        self.context.judgements["miss"] += 1
+        self.context.hits += 1
+        self.show_judgement("miss")

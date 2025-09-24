@@ -15,6 +15,7 @@ class Game:
         self.dt = 0
         self.running = True
 
+
         self.state_manager = StateManager()
 
     def run(self):
