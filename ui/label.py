@@ -18,6 +18,8 @@ class Label(UIElement):
         self.text_surface = None
         self.create_text_surface()
 
+
+
     def set_text(self, new_text):
         if self.text != new_text:
             self.text = str(new_text)

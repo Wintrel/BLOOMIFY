@@ -68,21 +68,21 @@
             "type": "RECTANGLE",
             "size": { "w": 280, "h": 36 },
             "pos": { "x": 1022, "y": 33 },
-            "styles": { "bg": "rgb(64, 0, 0)", "radius": 20 }
+            "styles": { "bg": "rgb(5, 5, 5)", "radius": 20 }
           },
           {
             "name": "group_button",
             "type": "RECTANGLE",
             "size": { "w": 280, "h": 36 },
             "pos": { "x": 1319.74, "y": 33 },
-            "styles": { "bg": "rgb(64, 0, 0)", "radius": 20 }
+            "styles": { "bg": "rgb(5, 5, 5)", "radius": 20 }
           },
           {
             "name": "collection_button",
             "type": "RECTANGLE",
             "size": { "w": 280, "h": 36 },
             "pos": { "x": 1617.48, "y": 33 },
-            "styles": { "bg": "rgb(64, 0, 0)", "radius": 20 }
+            "styles": { "bg": "rgb(5, 5, 5)", "radius": 20 }
           },
           {
             "name": "sort_background",
@@ -173,7 +173,7 @@
             "type": "RECTANGLE",
             "size": { "w": 741, "h": 68 },
             "pos": { "x": 44, "y": 253 },
-            "styles": { "bg": "rgb(64, 0, 0)", "radius": 20 }
+            "styles": { "bg": "rgb(5, 5, 5)", "radius": 20 }
           },
           {
             "name": "position_background",
@@ -215,11 +215,11 @@
         "pos": { "x": 44, "y": 25 },
         "children": [
           {
-            "name": "IMG_beatmap_art_placeholder",
+            "name": "Panel_background",
             "type": "RECTANGLE",
             "size": { "w": 741, "h": 184 },
             "pos": { "x": 44, "y": 25 },
-            "styles": { "bg": "rgb(64, 0, 0)" }
+            "styles": { "bg": "rgb(5, 5, 5)" }
           },
           {
             "name": "beatmaps_stats",
