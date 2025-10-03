@@ -5,10 +5,14 @@ import os
 SETTINGS_FILE = "settings.json"
 DEFAULT_SETTINGS = {
     "master_volume": 0.5,
-    # Add other settings here in the future (e.g., keybinds, resolution)
+    "keybinds": {
+        "0": "d",
+        "1": "f",
+        "2": "j",
+        "3": "k"
+    }
 }
 
-# This will hold the live settings for the game
 SETTINGS = {}
 
 
@@ -19,17 +23,19 @@ def load_settings():
         try:
             with open(SETTINGS_FILE, 'r') as f:
                 SETTINGS = json.load(f)
-            # Ensure all default keys are present
+            # Ensure all default keys and nested keys are present
             for key, value in DEFAULT_SETTINGS.items():
                 if key not in SETTINGS:
                     SETTINGS[key] = value
+            for key, value in DEFAULT_SETTINGS['keybinds'].items():
+                if key not in SETTINGS['keybinds']:
+                    SETTINGS['keybinds'][key] = value
+
         except (json.JSONDecodeError, TypeError):
-            print(f"Warning: Could not read '{SETTINGS_FILE}'. Resetting to defaults.")
             SETTINGS = DEFAULT_SETTINGS.copy()
     else:
         SETTINGS = DEFAULT_SETTINGS.copy()
 
-    # Apply the initial volume setting
     apply_volume()
 
 
@@ -44,7 +50,7 @@ def save_settings():
 
 def set_volume(level):
     """ Updates the volume setting and applies it immediately. """
-    level = max(0.0, min(1.0, level))  # Clamp between 0 and 1
+    level = max(0.0, min(1.0, level))
     SETTINGS["master_volume"] = level
     apply_volume()
 
@@ -53,3 +59,15 @@ def apply_volume():
     """ Sets the Pygame mixer volume from the current settings. """
     volume = SETTINGS.get("master_volume", 0.5)
     pygame.mixer.music.set_volume(volume)
+
+
+def get_keybinds():
+    """ Returns the current keybinds dictionary. """
+    return SETTINGS.get("keybinds", DEFAULT_SETTINGS["keybinds"])
+
+
+def set_keybind(lane_index, key_name):
+    """ Sets a new key for a specific lane. """
+    SETTINGS["keybinds"][str(lane_index)] = key_name
+    save_settings()  # Save immediately after changing
+

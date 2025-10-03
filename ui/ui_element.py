@@ -3,7 +3,7 @@ import pygame
 
 class UIElement:
     """
-    The base class for all UI elements, now with a more robust animation engine.
+    The base class for all UI elements, now with automatic parent registration.
     """
 
     def __init__(self, name="", pos=(0, 0), size=(0, 0), parent=None):
@@ -13,8 +13,14 @@ class UIElement:
         self.parent = parent
         self.children = []
         self.visible = True
+
+        # --- FIX: Automatically register with the parent when created ---
+        if self.parent:
+            self.parent.add_child(self)
+
         self.absolute_pos = [0, 0]
         self._calculate_absolute_pos()
+
         self.is_animating = False
         self.start_pos = list(self.absolute_pos)
         self.target_pos = list(self.absolute_pos)
@@ -27,14 +33,14 @@ class UIElement:
             self.absolute_pos[1] = self.parent.absolute_pos[1] + self.pos[1]
         else:
             self.absolute_pos = list(self.pos)
+
         for child in self.children:
             child._calculate_absolute_pos()
 
     def add_child(self, child):
         if child not in self.children:
             self.children.append(child)
-            child.parent = self
-            child._calculate_absolute_pos()
+            # The parent is already set in the child's __init__, so no need to set it again
 
     def animate_position(self, target_pos, duration):
         self.start_pos = list(self.absolute_pos)
@@ -57,7 +63,6 @@ class UIElement:
                 self.absolute_pos[0] = self.start_pos[0] + (self.target_pos[0] - self.start_pos[0]) * eased_progress
                 self.absolute_pos[1] = self.start_pos[1] + (self.target_pos[1] - self.start_pos[1]) * eased_progress
 
-                # --- FIX: After moving, tell children to update their positions ---
                 for child in self.children:
                     child._calculate_absolute_pos()
 
@@ -69,11 +74,14 @@ class UIElement:
                 for child in self.children:
                     child._calculate_absolute_pos()
 
+        # Update children regardless of parent's animation state
         for child in self.children:
             child.update(dt)
 
     def draw(self, surface):
         if not self.visible: return
+        # The parent (e.g., Panel) handles its own drawing first.
+        # Then, this base draw method handles drawing all children on top.
         for child in self.children:
             child.draw(surface)
 

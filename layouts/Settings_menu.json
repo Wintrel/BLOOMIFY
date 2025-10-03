@@ -38,6 +38,34 @@
             "pos": {"x": 30, "y": 190},
             "size": {"w": 390, "h": 20},
             "styles": { "bg": "rgba(100,100,100,50)" }
+          },
+          {
+            "name": "keybind_0_button",
+            "type": "RECTANGLE",
+            "pos": {"x": 30, "y": 240},
+            "size": {"w": 390, "h": 40},
+            "styles": { "bg": "rgba(50,50,70,255)", "radius": 10 }
+          },
+          {
+            "name": "keybind_1_button",
+            "type": "RECTANGLE",
+            "pos": {"x": 30, "y": 300},
+            "size": {"w": 390, "h": 40},
+            "styles": { "bg": "rgba(50,50,70,255)", "radius": 10 }
+          },
+          {
+            "name": "keybind_2_button",
+            "type": "RECTANGLE",
+            "pos": {"x": 30, "y": 360},
+            "size": {"w": 390, "h": 40},
+            "styles": { "bg": "rgba(50,50,70,255)", "radius": 10 }
+          },
+          {
+            "name": "keybind_3_button",
+            "type": "RECTANGLE",
+            "pos": {"x": 30, "y": 420},
+            "size": {"w": 390, "h": 40},
+            "styles": { "bg": "rgba(50,50,70,255)", "radius": 10 }
           }
         ]
       }

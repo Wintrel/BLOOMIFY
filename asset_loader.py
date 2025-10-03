@@ -40,8 +40,9 @@ def scale_to_cover(image, target_size):
     return final_surface
 
 
-def load_font(font_name, size):
-    cache_key = (font_name, size)
+
+def load_font(font_name, size, bold=False, italic=False):
+    cache_key = (font_name, size, bold, italic)
     if cache_key in FONT_CACHE:
         return FONT_CACHE[cache_key]
     if not font_name:
@@ -50,14 +51,23 @@ def load_font(font_name, size):
         return font
     try:
         full_path = os.path.join(FONT_PATH, f"{font_name}.ttf")
+
+        print(f"Attempting to load font: {full_path}")
+
         if not os.path.exists(full_path):
             full_path = os.path.join(FONT_PATH, f"{font_name}.otf")
+
         font = pygame.font.Font(full_path, size)
+        font.set_bold(bold)
+        font.set_italic(italic)
+
         FONT_CACHE[cache_key] = font
         return font
     except (FileNotFoundError, pygame.error) as e:
         print(f"Warning: Font '{font_name}' not found or failed to load. Falling back to default.")
         font = pygame.font.Font(None, size)
+        font.set_bold(bold)
+        font.set_italic(italic)
         FONT_CACHE[cache_key] = font
         return font
 
@@ -109,7 +119,6 @@ def create_blurred_background(image, size, passes=4):
     return blurred_surface
 
 
-
 def get_dominant_color(image, default_color=(128, 128, 128), vibrant=False):
     if not image: return default_color
     try:
@@ -126,4 +135,3 @@ def get_dominant_color(image, default_color=(128, 128, 128), vibrant=False):
             return color
     except Exception:
         return default_color
-
