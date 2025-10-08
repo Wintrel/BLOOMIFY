@@ -5,6 +5,9 @@
 # **BLOOMIFY**
 A rhythm game inspired by osu!mania with a chaotic twist.
 
+## **Dependacy**
+To get beatmaps need to make a folder beatmaps in assets. and using this github repo for beatmap generator https://github.com/Wintrel/Bloomify-Engine
+
 ## **About**
 Bloomify is a rhythm game inspired by the popular title osu!mania, but with a chaotic twist. It takes the core concept of hitting notes in time with music, then adds a variety of playful and unpredictable mechanics that make gameplay fun and challenging.
 
